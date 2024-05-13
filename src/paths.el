@@ -135,6 +135,7 @@
 
 
 ;; (define-dir-path-const 'ub/bib-dir (file-truename "~/main/library/bib/bolatu"))
+(define-dir-path-const 'ub/bib-dir (file-truename "~/main/library/zotra"))
 
 ;; (define-dir-path-const 'ub/bib-rebiber-dir (expand-file-name "~/main/library/bib/bolatu_rebiber"))
 ;; (setq ub/bib-files-list  (ub/directory-files-recursively ub/bib-dir "\.bib$" 0 nil))

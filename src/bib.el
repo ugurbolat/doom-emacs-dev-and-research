@@ -545,7 +545,11 @@ ENTRY is assumed to be an alist of BibTeX fields."
                           (downcase (or last-name ""))
                           (or short-title "")
                           (or year ""))))
-    (replace-regexp-in-string "\\s-+" "" key-new)))  ; Remove any whitespace
+    (replace-regexp-in-string "\\s-+" "" key-new) ;; Remove any whitespace
+    ;; TODO replace special characters with their ascii equivalent
+    ;; for a now, we just remove them
+    (replace-regexp-in-string "[^a-zA-Z0-9 ]" "" key-new)
+    ))
 
 
 ;;;###autoload
@@ -666,11 +670,17 @@ And, Generates new BibTeX key."
                             (date (format-time-string "%y%m%d"))
                             ;; MAYBE add bibtex-key to pdf file name
                             (pdf-file-name (format "%s_%s_%s_%s.pdf" date author-last-name-decaptialized year title-decaptialized))
-                            (pdf-file-path (expand-file-name pdf-file-name download-dir))
+                            ;; TODO replace special characters with their ascii equivalent
+                            ;; for a now, we just remove them
+                            ;; replace special characters with "" except underscore
+                            ;;(pdf-file-name (replace-regexp-in-string "[^a-zA-Z0-9_ ]" "" pdf-file-name))
+                            (pdf-file-name-wo-special-chars (replace-regexp-in-string "[^a-zA-Z0-9_ .]" "" pdf-file-name))
+                            ;;(pdf-file-path (expand-file-name pdf-file-name download-dir))
+                            (pdf-file-path (expand-file-name pdf-file-name-wo-special-chars download-dir))
                             )
 
                        ;; save the pdf file to the download directory
-                       (zotra-download-attachment url download-dir pdf-file-name nil)
+                       (zotra-download-attachment url download-dir pdf-file-name-wo-special-chars nil)
 
                        (message "PDF file path: %s" pdf-file-path)
 
