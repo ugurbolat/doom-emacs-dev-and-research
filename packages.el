@@ -300,3 +300,6 @@
   :recipe (:host github
            :repo "gregsexton/origami.el"))
 
+(package! ox-ipynb
+  :recipe (:host github
+           :repo "jkitchin/ox-ipynb"))

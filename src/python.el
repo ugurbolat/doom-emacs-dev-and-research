@@ -104,4 +104,11 @@
                         'pdb-capf nil t))))
 
 
+
+(use-package! ox-ipynb)
+;; NOTE for the bug if still exists
+;;; ;; BUG Refresh inline images after executing src blocks
+;; (after! ox-ipynb
+;;   (advice-remove 'org-display-inline-images #'font-lock-fontify-buffer))
+
 (message "python.el load end")
