@@ -994,3 +994,12 @@
 
          ))
   )
+
+
+;; fold org-agenda items that obeys the space-level hierarchy with origami
+(use-package! origami
+  :hook
+  (org-agenda-mode . origami-mode)
+  ;;(python-mode . origami-mode)  ;; NOTE backtab/S-TAB is binded to de-indent
+  :bind (("<backtab>" . origami-recursively-toggle-node)))
+

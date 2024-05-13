@@ -295,3 +295,8 @@
            :repo "ugurbolat/doom-snippets"
            :files (:defaults "*"))
   :pin "00c1a41c37863af6d55aeae97137851ed193624a")
+
+(package! origami
+  :recipe (:host github
+           :repo "gregsexton/origami.el"))
+
