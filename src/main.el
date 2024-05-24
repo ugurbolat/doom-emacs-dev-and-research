@@ -462,6 +462,8 @@
 (load-file (expand-file-name "src/org-mode-autoload.el" doom-user-dir))
 (load-file (expand-file-name "src/org-mode-common-config.el" doom-user-dir))
 
+(load-file (expand-file-name "src/jupyter.el" doom-user-dir))
+
 (load-file (expand-file-name "src/bib.el" doom-user-dir))
 
 

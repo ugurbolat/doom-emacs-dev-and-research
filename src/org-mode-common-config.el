@@ -143,7 +143,7 @@
                                             (file-name-extension filename))))
       (make-directory dirname t)
       (expand-file-name filename-with-timestamp dirname)))
-  ;;(setq org-download-method '+org/org-download-method)
+  (setq org-download-method '+org/org-download-method)
   ;;(setq org-image-actual-width nil) ;; think necessary for 500 to take effect
   ;;(setq org-download-image-org-width 600)
   (setq org-download-annotate-function 'ignore)
@@ -151,62 +151,26 @@
   )
 
 
-
-
-;; ;; TODO current setup disables zmq, which is faster and async?
-;; ;; so currently experience freezing sessions
-;; (use-package! jupyter
-;;   ;;:ensure (:fetcher github :repo "emacs-jupyter/jupyter")
-;;   :defer 0.1
-;;   :config
-;;   (require 'ob-jupyter)
-;;   (require 'jupyter)
-;;   (setq jupyter-use-zmq nil))
-
-;; REF https://github.com/emacs-jupyter/jupyter/issues/500
-;; make sure to install/download the jupyter
-;; install jupyter_server=1.23.4
-
-
-;; ;; babel python
-;; (use-package! org
-;;   :config
-;;   ;; doom already loads shell
-;;   ;;(add-to-list 'org-babel-load-languages '(shell . t))
-;;   ;; python
-;;   (setq org-babel-default-header-args:python
-;;         '((:results . "output")
-;;           (:session . "python-default")
-;;           (:python . "python3")
-;;           (:exports . "both")
-;;           (:cache .   "no")
-;;           (:noweb . "no")
-;;           (:hlines . "no")
-;;           (:tangle . "no")
-;;           (:async . "yes")
-;;           (:eval . "never-export")))
-;;   (add-to-list 'org-babel-load-languages '(python . t))
-;;   ;; jupyter-python
-;;   (setq org-babel-default-header-args:jupyter
-;;         '((:results . "both")
-;;           (:session . "jupyter-python-default")
-;;           (:kernel . "python3")
-;;           (:pandoc . "t")
-;;           (:exports . "both")
-;;           (:cache .   "no")
-;;           (:noweb . "no")
-;;           (:hlines . "no")
-;;           (:tangle . "no")
-;;           (:async . "yes")
-;;           (:eval . "never-export")))
-;;   (add-to-list 'org-babel-load-languages '(python . t))
-;;   (add-to-list 'org-src-lang-modes '("jupyter" . python))
-;;   (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
-
-
-;; ;; BUG latest Jupyter : REST API error: 404, "Not found" #500
-;; ;; mamba install jupyter_server=1.23.4
-
+;; babel python
+(use-package! org
+  :config
+  ;; doom already loads shell
+  ;;(add-to-list 'org-babel-load-languages '(shell . t))
+  ;; python
+  (setq org-babel-default-header-args:python
+        '((:results . "output")
+          (:session . "python-default")
+          (:python . "python3")
+          (:exports . "both")
+          (:cache .   "no")
+          (:noweb . "no")
+          (:hlines . "no")
+          (:tangle . "no")
+          (:async . "yes")
+          (:eval . "never-export")))
+  (add-to-list 'org-babel-load-languages '(python . t))
+  (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
+  )
 
 
 ;; FIXME
