@@ -1,5 +1,8 @@
 ;;; src/jupyter.el -*- lexical-binding: t; -*-
 
+;; See the discussion: https://github.com/emacs-jupyter/jupyter/issues/464
+;; The current setup uses specific commit to avoid the issue related zmq
+
 ;; TODO current setup disables zmq, which is faster and async?
 ;; so currently experience freezing sessions
 (use-package! jupyter

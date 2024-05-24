@@ -67,6 +67,8 @@
   )
 
 
+;;set /home/bolatu/emacs-configs/doom-done-right/.local/straight/repos/doom-snippets/org-mode
+(setq +snippets-dir "/home/bolatu/emacs-configs/doom-done-right/.local/straight/repos/doom-snippets/")
 
 (use-package! org-ai
   :defer t
@@ -217,6 +219,18 @@
                       :headline "Inbox"
                       :before-finalize ub/capture-id-create
                       :template ("* TODO %i%?  "
+                                 ":PROPERTIES:"
+                                 ":CREATED: %U"
+                                 ":REF-LINK: %a"
+                                 ":END:")))
+  (add-to-list 'doct-cap-temp-list cap-task-me t)
+  (setq cap-task-me `("Inbox" :keys "i" :type entry :prepend t
+                      :unnarrowed nil
+                      :empty-lines-before 1
+                      :file ,ub/gtd-inbox-laptop-file
+                      ;;:headline "Inbox"
+                      ;;:before-finalize ub/capture-id-create
+                      :template ("* %i%?  "
                                  ":PROPERTIES:"
                                  ":CREATED: %U"
                                  ":REF-LINK: %a"

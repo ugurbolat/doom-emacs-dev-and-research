@@ -96,7 +96,7 @@ Includes all sub-elements of the headings."
 ;;;###autoload
 (defun ub/org-ql-captures-all ()
   (interactive)
-  (org-ql-search `(,ub/gtd-inbox-file)
+  (org-ql-search `(,ub/gtd-inbox-file ,ub/gtd-inbox-laptop-file)
     '()
     :sort '(date)
     ;; NOTE that we are using forked org-super-agenda for reverse sorting for super-groups
@@ -106,7 +106,7 @@ Includes all sub-elements of the headings."
 ;;;###autoload
 (defun ub/org-ql-captures-14d ()
   (interactive)
-  (org-ql-search `(,ub/gtd-inbox-file)
+  (org-ql-search `(,ub/gtd-inbox-file ,ub/gtd-inbox-laptop-file)
     '(ts :from -14 :to today)
     :sort '(date)
     :super-groups '((:auto-ts t))))
@@ -116,7 +116,7 @@ Includes all sub-elements of the headings."
 ;;;###autoload
 (defun ub/org-ql-captures-14d-tags ()
   (interactive)
-  (org-ql-search `(,ub/gtd-inbox-file)
+  (org-ql-search `(,ub/gtd-inbox-file ,ub/gtd-inbox-laptop-file)
     '(ts :from -14 :to today)
     :sort '(date)
     :super-groups '((:auto-tags t))))
@@ -126,7 +126,7 @@ Includes all sub-elements of the headings."
 ;;;###autoload
 (defun ub/org-ql-deadlines-all ()
   (interactive)
-  (org-ql-search (append `(,ub/gtd-me-file ,ub/gtd-work-file ,ub/gtd-inbox-file)
+  (org-ql-search (append `(,ub/gtd-me-file ,ub/gtd-work-file ,ub/gtd-inbox-file ,ub/gtd-inbox-laptop-file)
                          ;;ub/gtd-me-projects-main-files-list
                          ;;ub/gtd-work-projects-main-files-list
                          )

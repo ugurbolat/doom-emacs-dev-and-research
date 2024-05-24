@@ -88,6 +88,7 @@
 (define-file-path-const 'ub/gtd-work-file (file-truename "~/main/org/gtd/work.org"))
 (define-file-path-const 'ub/gtd-me-file (file-truename "~/main/org/gtd/me.org"))
 (define-file-path-const 'ub/gtd-inbox-file (file-truename "~/main/org/gtd/inbox.org"))
+(define-file-path-const 'ub/gtd-inbox-laptop-file (file-truename "~/main/org/gtd/inbox-laptop.org"))
 (define-file-path-const 'ub/gtd-bookmark-file (file-truename "~/main/org/gtd/bookmark.org"))
 (define-file-path-const 'ub/gtd-horizon-file (file-truename "~/main/org/gtd/horizon.org"))
 

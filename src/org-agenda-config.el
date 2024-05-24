@@ -41,6 +41,7 @@
                                  ,ub/gtd-me-file
                                  ,ub/gtd-work-file
                                  ,ub/gtd-inbox-file
+                                 ,ub/gtd-inbox-laptop-file
                                  )
                                ub/doom-emacs-files-list
                                ))
@@ -52,6 +53,7 @@
                                   ,ub/gtd-me-file
                                   ,ub/gtd-work-file
                                   ,ub/gtd-inbox-file
+                                  ,ub/gtd-inbox-laptop-file
                                   )
                                 ))
   (defun ub/gtd-main-files-list-func ()
@@ -65,6 +67,7 @@
         `((org-agenda-files ',ub/org-agenda-files-gtd-main-journal-main)))
   (setq ub/org-agenda-files-gtd-main-journal-main-zk-captures (append
                                                                `(,ub/gtd-inbox-file
+                                                                 ,ub/gtd-inbox-laptop-file
                                                                  )
                                                                ub/gtd-main-files-list
                                                                ub/roam-dailies-main-files-list
@@ -86,6 +89,7 @@
         `((org-agenda-files ',ub/org-agenda-files-gtd-all-journal-all)))
   (setq ub/org-agenda-files-gtd-all-journal-all-zk-captures (append
                                                              `(,ub/gtd-inbox-file
+                                                               ,ub/gtd-inbox-laptop-file
                                                                )
                                                              ub/gtd-all-files-list
                                                              ub/roam-dailies-main-files-list
@@ -875,6 +879,7 @@
 
          (cons "Follow                  #Bucket"
                (list :buffers-files `(,ub/gtd-inbox-file
+                                      ,ub/gtd-inbox-laptop-file
                                       ,ub/gtd-bookmark-file
                                       ,ub/gtd-me-file
                                       ,ub/gtd-work-file
@@ -890,6 +895,7 @@
 
          (cons "Research Papers         #Bucket"
                (list :buffers-files `(,ub/gtd-inbox-file
+                                      ,ub/gtd-inbox-laptop-file
                                       ,ub/gtd-bookmark-file
                                       )
                      :query '(and (tags "paper" "bib")
@@ -901,6 +907,7 @@
 
          (cons "Research Talks          #Bucket"
                (list :buffers-files `(,ub/gtd-inbox-file
+                                      ,ub/gtd-inbox-laptop-file
                                       ,ub/gtd-bookmark-file
                                       )
                      :query '(and
@@ -916,6 +923,7 @@
 
          (cons "Movie & Series          #Bucket"
                (list :buffers-files `(,ub/gtd-inbox-file
+                                      ,ub/gtd-inbox-laptop-file
                                       ,ub/gtd-bookmark-file
                                       )
                      :query '(and (tags "movie" "series")
@@ -927,6 +935,7 @@
 
          (cons "Listen & Watch          #Bucket"
                (list :buffers-files `(,ub/gtd-inbox-file
+                                      ,ub/gtd-inbox-laptop-file
                                       ,ub/gtd-bookmark-file
                                       )
                      :query '(and (tags "listen" "watch" "talk")
@@ -938,6 +947,7 @@
 
          (cons "Music                   #Bucket"
                (list :buffers-files `(,ub/gtd-inbox-file
+                                      ,ub/gtd-inbox-laptop-file
                                       ,ub/gtd-bookmark-file
                                       )
                      :query '(and (tags "track" "set" "music")
@@ -949,6 +959,7 @@
 
          (cons "Read                    #Bucket"
                (list :buffers-files `(,ub/gtd-inbox-file
+                                      ,ub/gtd-inbox-laptop-file
                                       ,ub/gtd-bookmark-file
                                       )
                      :query '(and (tags "read")
@@ -962,6 +973,7 @@
 
          (cons "Book                    #Bucket"
                (list :buffers-files `(,ub/gtd-inbox-file
+                                      ,ub/gtd-inbox-laptop-file
                                       ,ub/gtd-bookmark-file
                                       )
                      :query '(and (tags "book")
@@ -975,6 +987,7 @@
 
          (cons "Check out               #Bucket"
                (list :buffers-files `(,ub/gtd-inbox-file
+                                      ,ub/gtd-inbox-laptop-file
                                       ,ub/gtd-bookmark-file
                                       )
                      :query '(and (tags "check" "check_later")
@@ -986,6 +999,7 @@
 
          (cons "Twits                   #Bucket"
                (list :buffers-files `(,ub/gtd-inbox-file
+                                      ,ub/gtd-inbox-laptop-file
                                       )
                      :query '(regexp "t.co" "twitter.com")
                      :title "Twits"
