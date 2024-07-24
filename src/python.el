@@ -111,4 +111,11 @@
 ;; (after! ox-ipynb
 ;;   (advice-remove 'org-display-inline-images #'font-lock-fontify-buffer))
 
+
+;; TODO considering searching with consult etc.
+(defun python-summary ()
+  (interactive)
+  (occur "\\<def\\>\\|\\<class\\>"))
+
+
 (message "python.el load end")
