@@ -24,7 +24,7 @@
    org-list-demote-modify-bullet
    '(("+" . "*") ("*" . "-") ("-" . "+"))
    org-hide-emphasis-markers t
-   org-image-actual-width '(600)
+   org-image-actual-width '(800)
    org-id-method 'ts
    org-use-speed-commands t
    org-log-into-drawer t
@@ -323,6 +323,15 @@
   ;; usepackage latex
   (add-to-list 'org-latex-packages-alist '("" "braket" t))
   (add-to-list 'org-latex-packages-alist '("" "bm" t))
+  ;; for tables
+  ;; REF https://pandas.pydata.org/docs/reference/api/pandas.io.formats.style.Styler.to_latex.html
+  (add-to-list 'org-latex-packages-alist '("" "multirow" t))
+  (add-to-list 'org-latex-packages-alist '("" "booktabs" t))
+  (add-to-list 'org-latex-packages-alist '("table" "xcolor" t))
+  (add-to-list 'org-latex-packages-alist '("" "siunitx" t))
+  (add-to-list 'org-latex-packages-alist '("" "etoolbox" t))
+  (add-to-list 'org-latex-packages-alist '("" "longtable" t))
+  (add-to-list 'org-latex-packages-alist '("" "hyperref" t))
 
   (defun my/resize-org-latex-overlays ()
     (cl-loop for o in (car (overlay-lists))
@@ -349,21 +358,25 @@
   :config
   (setq org-latex-logfiles-extensions '("blg" "fdb_latexmk" "fls" "figlist" "idx" "log" "nav" "out" "ptc" "run.xml" "snm" "toc" "vrb" "xdv")) ;; keep aux and bcf to generate .bib
   (setq org-latex-pdf-process (list "latexmk -shell-escape -f -pdf %f"
-                                    "biber --output_align --output_indent=2 --output_fieldcase=lower --output_format=bibtex --output_resolve %b.bcf"
-                                    "sed -i -e '/^\s*file\s*=/d' -e '/^\s*abstract\s*=/d' %b_biber.bib" ;; remove 'file' and 'abstract' field
+                                    ;; below migh be slowing down the export...
+                                    ;;"biber --output_align --output_indent=2 --output_fieldcase=lower --output_format=bibtex --output_resolve %b.bcf"
+                                    ;;"sed -i -e '/^\s*file\s*=/d' -e '/^\s*abstract\s*=/d' %b_biber.bib" ;; remove 'file' and 'abstract' field
                                     "rm %b.bcf"
                                     "rm %b.aux"
                                     ;; TODO replace \addbibresource{...} w/ local %b_biber.bib in generated .tex
                                     ))
-  (setq org-latex-src-block-backend 'minted)
-  (add-to-list 'org-latex-packages-alist '("" "newfloat" t)) ;; beamer
-  (add-to-list 'org-latex-packages-alist '("outputdir=/tmp" "minted" t)) ;; src blocks
-  (add-to-list 'org-latex-packages-alist '("" "braket" t))
-  (add-to-list 'org-latex-packages-alist '("" "algorithm" t))
-  (add-to-list 'org-latex-packages-alist '("" "algpseudocode" t))
-  (add-to-list 'org-latex-packages-alist '("" "cancel" t))
-  (add-to-list 'org-latex-packages-alist '("" "bm" t))
-  (add-to-list 'org-latex-packages-alist '("" "tikz" t))
+
+  ;; ;; below migh be slowing down the export...
+  ;; (setq org-latex-src-block-backend 'minted)
+  ;; (add-to-list 'org-latex-packages-alist '("" "newfloat" t)) ;; beamer
+  ;; (add-to-list 'org-latex-packages-alist '("outputdir=/tmp" "minted" t)) ;; src blocks
+  ;; (add-to-list 'org-latex-packages-alist '("" "braket" t))
+  ;; (add-to-list 'org-latex-packages-alist '("" "algorithm" t))
+  ;; (add-to-list 'org-latex-packages-alist '("" "algpseudocode" t))
+  ;; (add-to-list 'org-latex-packages-alist '("" "cancel" t))
+  ;; (add-to-list 'org-latex-packages-alist '("" "bm" t))
+  ;; (add-to-list 'org-latex-packages-alist '("" "tikz" t))
+
   (eval-after-load "preview"
     '(add-to-list 'preview-default-preamble
       "\\PreviewEnvironment{tikzpicture}" t))
