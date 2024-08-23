@@ -112,10 +112,75 @@
 ;;   (advice-remove 'org-display-inline-images #'font-lock-fontify-buffer))
 
 
+
+;; REF: https://github.com/minad/consult?tab=readme-ov-file#grep-and-find
+;; search pattern #regexps#filter-string
+;; regexps: regular expression to search for
+;; filter-string: string to filter the results withing the first search
+;; TODO start wihout hashtag and search for files with consult-ripgrep
+;; (defun ub/consult-ripgrep-wo-hashtag (&optional dir initial)
+;;   (interactive)
+;;   (let ((consult--async-split-initial "asd"))
+;;     (consult-ripgrep dir initial)))
+;; (defun my-consult-ripgrep-advice (orig-func &optional dir initial)
+;;   "Advice to adjust initial input for `consult-ripgrep`.
+;; Remove the automatic `#` prefix if present."
+;;   (interactive "P")
+;;   ;; Check if initial exists and modify it, or set it to empty as an example.
+;;   (let ((new-initial (if (string-prefix-p "#" initial)
+;;                          (substring initial 1)
+;;                        (or initial ""))))
+;;     (funcall orig-func dir new-initial)))
+;; (advice-add 'consult-ripgrep :around #'my-consult-ripgrep-advice)
+
+
+
 ;; TODO considering searching with consult etc.
-(defun python-summary ()
+(defun ub/python-summary-on-current-buffer-w-occur ()
   (interactive)
   (occur "\\<def\\>\\|\\<class\\>"))
+
+(defun ub/python-search-uncommented-breakpoint-on-current-buffer-w-occur ()
+  (interactive)
+  (occur "^[^#]*breakpoint()"))
+
+(defun ub/python-commented-breakpoint-on-current-buffer-w-occur ()
+  (interactive)
+  (occur "^[^#]*#.*breakpoint("))
+
+;; TODO customize grep output face/style with awk to align the output
+;; (setq grep-command
+;;       "find . -type f ! -path './' -exec grep --color=auto -nH --null -e YOUR_PATTERN_HERE {} + | awk '{printf \"%s:%-4s :%s\\n\", $1,$2,$3}'")
+
+(defun ub/python-summary-on-current-directory-w-occur ()
+  (interactive)
+  (rgrep "\\<def\\>\\|\\<class\\>" "*.py" "./" nil))
+
+;; (defun ub/python-search-uncommented-breakpoint ()
+;;   (interactive)
+;;   (ub/consult-ripgrep-current-dir "'^[^#]*breakpoint()'"))
+(defun ub/python-search-uncommented-breakpoint-w-consult()
+  (interactive)
+  (ub/consult-ripgrep-current-dir "breakpoint()#^[^#]*breakpoint()"))
+
+;; (defun ub/python-commented-breakpoint ()
+;;   (interactive)
+;;   (ub/consult-ripgrep-current-dir "'^[^#]*#.*breakpoint()'"))
+(defun ub/python-commented-breakpoint-w-consult ()
+  (interactive)
+  (ub/consult-ripgrep-current-dir "breakpoint()##"))
+
+(defun ub/python-summary-w-consult ()
+  (interactive)
+  (ub/consult-ripgrep-current-dir "'\\<def\\>\\|\\<class\\>'"))
+
+;; TODO
+;; (defun ub/python-search-uncommented-breakpoint-w-wgrep()
+;;   (interactive)
+;;   (ub/consult-ripgrep-current-dir "breakpoint()#^[^#]*breakpoint()")
+;;   (embark-export)
+;;   (wgrep-change-to-wgrep-mode)
+;;   )
 
 
 (message "python.el load end")
