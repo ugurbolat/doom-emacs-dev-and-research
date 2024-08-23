@@ -55,8 +55,8 @@
 #+LAST_MODIFIED: %<%Y-%m-%d %H:%M>
 #+CATEGORY: roam
 #+FILETAGS: :bib:bib_file:
-#+SETUPFILE: /home/bolatu/emacs-configs/done-right/latex-include/bib_bolatu_linux.org
-
+#+SETUPFILE: /home/bolatu/main/org/templates/latex-include-header/bib_bolatu_linux.org
+#+SETUPFILE: /home/bolatu/main/org/templates/latex-include-header/org_latex_report.org
 
 
 * References
