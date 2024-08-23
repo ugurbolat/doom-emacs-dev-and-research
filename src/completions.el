@@ -231,12 +231,11 @@
   :defer t
   ;;:ensure (:fetcher github :repo "zerolfx/copilot.el")
   :hook (
-         (prog-mode . copilot-mode)
+         ;;(prog-mode . copilot-mode)
          ;;(org-mode . copilot-mode)
          (copilot-mode . (lambda ()
                            (setq-local copilot--indent-warning-printed-p t))))
   :config
-  ;; disable idle delay for displaying instant completions which can be annoying
   (setq copilot-idle-delay 0)
 
   (setq copilot-indent-offset-warning-disable 't)
