@@ -333,6 +333,12 @@
   (add-to-list 'org-latex-packages-alist '("" "longtable" t))
   (add-to-list 'org-latex-packages-alist '("" "hyperref" t))
 
+  ;; ;; src blocks
+  ;; (setq org-latex-src-block-backend 'minted)
+  ;; (add-to-list 'org-latex-packages-alist '("" "algorithm" t))
+  ;; (add-to-list 'org-latex-packages-alist '("" "algorithmic" t))
+  ;; (add-to-list 'org-latex-packages-alist '("outputdir=/tmp" "minted" t)) ;; src blocks
+
   (defun my/resize-org-latex-overlays ()
     (cl-loop for o in (car (overlay-lists))
              if (eq (overlay-get o 'org-overlay-type) 'org-latex-overlay)
@@ -367,11 +373,13 @@
                                     ))
 
   ;; ;; below migh be slowing down the export...
+  ;; minted and algorithm packages don't work out-of-box
   ;; (setq org-latex-src-block-backend 'minted)
   ;; (add-to-list 'org-latex-packages-alist '("" "newfloat" t)) ;; beamer
   ;; (add-to-list 'org-latex-packages-alist '("outputdir=/tmp" "minted" t)) ;; src blocks
   ;; (add-to-list 'org-latex-packages-alist '("" "braket" t))
   ;; (add-to-list 'org-latex-packages-alist '("" "algorithm" t))
+  ;; (add-to-list 'org-latex-packages-alist '("" "algorithmic" t))
   ;; (add-to-list 'org-latex-packages-alist '("" "algpseudocode" t))
   ;; (add-to-list 'org-latex-packages-alist '("" "cancel" t))
   ;; (add-to-list 'org-latex-packages-alist '("" "bm" t))

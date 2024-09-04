@@ -299,3 +299,8 @@
 (package! ox-ipynb
   :recipe (:host github
            :repo "jkitchin/ox-ipynb"))
+
+
+(package! org-timeblock
+  :recipe (:host github
+           :repo "ichernyshovvv/org-timeblock"))

@@ -1017,3 +1017,4 @@
   ;;(python-mode . origami-mode)  ;; NOTE backtab/S-TAB is binded to de-indent
   :bind (("<backtab>" . origami-recursively-toggle-node)))
 
+(use-package! org-timeblock)
