@@ -453,6 +453,20 @@
 ;;(setenv "BASH_ENV" (expand-file-name "~/.bash_aliases"))
 
 
+;; NOTE format region w/ black/etc. for python doesn't work
+(use-package! format-all
+  :commands format-all-mode
+  :hook (prog-mode . format-all-mode)
+  ;; :config
+  ;; (setq-default format-all-formatters
+  ;;               '(("C"     (astyle "--mode=c"))
+  ;;                 ("Shell" (shfmt "-i" "4" "-ci"))))
+  )
+(use-package! python-black
+  :after python
+  ;;:hook (python-mode . python-black-on-save-mode-enable-dwim)
+  )
+
 (load-file (expand-file-name "src/credentials.el" doom-user-dir))
 
 (load-file (expand-file-name "src/completions.el" doom-user-dir))

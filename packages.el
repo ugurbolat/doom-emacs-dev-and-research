@@ -304,3 +304,11 @@
 (package! org-timeblock
   :recipe (:host github
            :repo "ichernyshovvv/org-timeblock"))
+
+(package! format-all
+  :recipe (:host github
+           :repo "lassik/emacs-format-all-the-code"))
+
+(package! python-black
+  :recipe (:host github
+           :repo "wbolster/emacs-python-black"))
