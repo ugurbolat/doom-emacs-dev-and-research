@@ -244,13 +244,13 @@
                               "%i"
                               )))
   (add-to-list 'doct-cap-temp-list cap-note t)
-  (setq cap-bib `("Bib" :keys "BB" :type entry :prepend t
-                  :unnarrowed nil
-                  :empty-lines-before 1
-                  :file ,ub/gtd-paper-file
-                  :template-file ,(expand-file-name "temp.org" ub/bib-rebiber-dir)
-                  ))
-  (add-to-list 'doct-cap-temp-list cap-bib t)
+  ;; (setq cap-bib `("Bib" :keys "BB" :type entry :prepend t
+  ;;                 :unnarrowed nil
+  ;;                 :empty-lines-before 1
+  ;;                 :file ,ub/gtd-paper-file
+  ;;                 :template-file ,(expand-file-name "temp.org" ub/bib-rebiber-dir)
+  ;;                 ))
+  ;; (add-to-list 'doct-cap-temp-list cap-bib t)
   (setq cap-bucket `("Web/Bucket" :keys "W"
                      :file ,ub/gtd-bookmark-file
                      :immediate-finish t

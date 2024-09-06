@@ -465,6 +465,7 @@
 (load-file (expand-file-name "src/jupyter.el" doom-user-dir))
 
 (load-file (expand-file-name "src/bib.el" doom-user-dir))
+;;(load-file (expand-file-name "src/rebiber.el" doom-user-dir)) ;; not written all well, reqiure fixed files like temp.org to be in certain paths
 
 
 (ub/run-if-server-active

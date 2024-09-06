@@ -1,5 +1,7 @@
 ;;; src/org-roam-config.el -*- lexical-binding: t; -*-
 
+;;(message "org-roam loading...")
+
 (use-package! org-roam
   ;;:ensure (:fetcher github :repo "org-roam/org-roam")
   ;;:defer 0.1
@@ -169,3 +171,5 @@
 
   (org-roam-db-autosync-mode)
   )
+
+;;(message "org-roam loaded!")

@@ -4,6 +4,7 @@
 ;;;###autoload
 (defun ub/run-if-server-active (body-fun)
   "Execute BODY-FUN if an Emacs server is running."
+  ;;(message "server is active")
   (when (bound-and-true-p server-process)
     (funcall body-fun)))
 ;;;###autoload

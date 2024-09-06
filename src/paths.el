@@ -51,8 +51,7 @@
 
 
 
-;; TODO rename doom-done-right
-(define-dir-path-const 'ub/doom-emacs-root-dir (file-truename "~/doom-configs/doom-minimal-eglot/src"))
+(define-dir-path-const 'ub/doom-emacs-root-dir (file-truename "~/doom-configs/doom-done-right"))
 
 
 ;; (setq ub/docs-dir (file-truename "~/main/org/docs"))
