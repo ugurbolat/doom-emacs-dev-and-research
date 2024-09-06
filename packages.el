@@ -65,23 +65,23 @@
            :repo "ugurbolat/emacs-pdb-capf"))
 
 
-;; ;;emacs-jupyter/jupyter
-;; (package! jupyter
-;;   :recipe (:host github
-;;            :repo "emacs-jupyter/jupyter"))
+;;emacs-jupyter/jupyter
+(package! jupyter
+  :recipe (:host github
+           :repo "emacs-jupyter/jupyter"))
 ;; (package! emacs-zmq
 ;;   :recipe (:host github
 ;;            :repo "nnicandro/emacs-zmq"))
 
-(package! emacs-zmq
-  :recipe (:host github
-           :repo "nnicandro/emacs-zmq")
-  ;;:pin "af5299d80715b1083a18145e9c84ef9563020676"
-  )
-(package! jupyter
-  :recipe (:host github
-           :repo "emacs-jupyter/jupyter")
-  :pin "053a78da252b19cf59cefe6b83f9c4531a38d6b2")
+;; (package! emacs-zmq
+;;   :recipe (:host github
+;;            :repo "nnicandro/emacs-zmq")
+;;   ;;:pin "af5299d80715b1083a18145e9c84ef9563020676"
+;;   )
+;; (package! jupyter
+;;   :recipe (:host github
+;;            :repo "emacs-jupyter/jupyter")
+;;   :pin "053a78da252b19cf59cefe6b83f9c4531a38d6b2")
 
 (package! org-ai
   :recipe (:host github

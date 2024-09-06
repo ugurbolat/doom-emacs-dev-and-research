@@ -11,7 +11,20 @@
   :config
   (require 'ob-jupyter)
   (require 'jupyter)
-  ;;(setq jupyter-use-zmq nil)
+  (setq jupyter-use-zmq nil)
+
+  ;; REF: https://github.com/emacs-jupyter/jupyter/issues/500
+  (defun my-jupyter-api-http-request--ignore-login-error-a
+      (func url endpoint method &rest data)
+    (cond
+     ((member endpoint '("login"))
+      (ignore-error (jupyter-api-http-error)
+        (apply func url endpoint method data)))
+     (:else
+      (apply func url endpoint method data))))
+  (advice-add
+   #'jupyter-api-http-request
+   :around #'my-jupyter-api-http-request--ignore-login-error-a)
   )
 
 (use-package! org

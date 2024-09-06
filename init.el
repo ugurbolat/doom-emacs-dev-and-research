@@ -109,7 +109,7 @@
        eval
        ;;gist              ; interacting with github gists
        lookup              ; navigate your code and its documentation
-       (lsp +eglot)               ; M-x vscode
+       ;;(lsp +eglot)               ; M-x vscode
        ;;lsp
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
