@@ -464,8 +464,10 @@
   )
 (use-package! python-black
   :after python
-  ;;:hook (python-mode . python-black-on-save-mode-enable-dwim)
   )
+
+;; disassembly to bytecode as well as assembly.
+(use-package! rmsbolt)
 
 (load-file (expand-file-name "src/credentials.el" doom-user-dir))
 

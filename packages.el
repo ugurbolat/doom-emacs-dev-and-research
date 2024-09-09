@@ -312,3 +312,7 @@
 (package! python-black
   :recipe (:host github
            :repo "wbolster/emacs-python-black"))
+
+(package! rmsbolt
+  :recipe (:host gitlab
+           :repo "jgkamat/rmsbolt"))
