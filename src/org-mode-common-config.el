@@ -150,6 +150,11 @@
   ;;(setq org-download-image-org-width 600)
   (setq org-download-annotate-function 'ignore)
   (setq org-download-annotate-function (lambda (_link) ""))
+
+  ;; doesn't work REF: https://github.com/abo-abo/org-download/issues/215
+  ;; (add-hook 'org-mode-hook
+  ;;           (lambda ()
+  ;;             (kill-local-variable 'dnd-protocol-alist)))
   )
 
 
