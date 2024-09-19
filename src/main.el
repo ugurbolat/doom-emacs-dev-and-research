@@ -52,7 +52,7 @@
 
 
 (ub/run-if-else-server-active
- #'(lambda () (load-theme 'doom-vibrant t))
+ #'(lambda () (load-theme 'doom-dracula t))
  ;;#'(lambda () (load-theme 'modus-vivendi t)))
  #'(lambda () (load-theme 'modus-vivendi-tinted t)))
 
