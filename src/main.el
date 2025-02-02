@@ -50,6 +50,31 @@
  #'(lambda () (setq doom-theme 'ef-rosa))
  #'(lambda () (load-file (expand-file-name "src/random-unique-theme.el" doom-user-dir))))
 
+;; removing unused menu items:
+(assoc-delete-all "Open project" +doom-dashboard-menu-sections)
+(assoc-delete-all "Open documentation" +doom-dashboard-menu-sections)
+
+;; add new items
+;; ;; REF: https://discourse.doomemacs.org/t/how-to-change-your-splash-screen/57
+;; ;; e.g.
+;; (add-to-list '+doom-dashboard-menu-sections
+;;              '("Add journal entry"
+;;                :icon (all-the-icons-octicon "calendar" :face 'doom-dashboard-menu-title)
+;;                :when (featurep! :lang org +journal)
+;;                :face (:inherit (doom-dashboard-menu-title bold))
+;;                :action org-journal-new-entry))
+(defun open-me-org-file ()
+  (interactive)
+  (find-file "~/main/org/gtd/me.org"))
+(add-to-list '+doom-dashboard-menu-sections
+             '("Open work.org" :icon (nerd-icons-octicon "nf-oct-file" :face 'doom-dashboard-menu-title)
+               :action open-work-org-file))
+(defun open-work-org-file ()
+  (interactive)
+  (find-file "~/main/org/gtd/work.org"))
+(add-to-list '+doom-dashboard-menu-sections
+             '("Open me.org" :icon (nerd-icons-octicon "nf-oct-file" :face 'doom-dashboard-menu-title)
+               :action open-me-org-file))
 
 ;;(setq doom-theme 'modus-vivendi)
 ;;(setq doom-theme 'doom-vibrant)
@@ -163,16 +188,16 @@
             (font-lock-add-keywords
              nil
              '((".*\\.py:[0-9]+:" . 'font-lock-constant-face)
-               ("\\(def\\|class\\) \\([a-zA-Z0-9_]+\\)" 
+               ("\\(def\\|class\\) \\([a-zA-Z0-9_]+\\)"
                 (1 'font-lock-keyword-face)
                 (2 'font-lock-function-name-face))))))
 
 (set-popup-rules!
- '(("^\\*grep"
-    :side left
-    :width 80
-    :select t
-    :quit nil)))
+  '(("^\\*grep"
+     :side left
+     :width 80
+     :select t
+     :quit nil)))
 
 
 ;; too shorten filenames in grep
