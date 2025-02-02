@@ -211,7 +211,7 @@
   :bind
   (:map dired-mode-map
         ("<tab>" . dired-subtree-toggle)
-        ("<C-tab>" . dired-subtree-cycle)
+        ;;("<C-tab>" . dired-subtree-cycle) ;; will use it for tab switch
         ("<backtab>" . dired-subtree-remove)
         ("e" . ub/ediff-files)
         ("<M-right>" . dired-find-file)
@@ -596,18 +596,59 @@
 ;; disassembly to bytecode as well as assembly.
 (use-package! rmsbolt)
 
+(load-file (expand-file-name "src/credentials.el" doom-user-dir))
 
 (use-package! gptel
   :config
-  (setq
-   gptel-model "claude-3-5-sonnet-20240620" ;  "claude-3-opus-20240229" also available
-   gptel-backend (gptel-make-anthropic "Claude"
-                   :stream t :key "TODO load from gpg"))
+  (setq gptel-default-mode 'org-mode)
+
+  (setq gptel-model "gpt-4o")
+  ;;(setq gptel-model "sonar")
+
+  ;;(setq gptel-api-key #'gptel-api-key-from-auth-source)
+  (setq gptel-api-key #'ub/load-key-openai-token)
+
+  ;; (setq
+  ;;  ;;gptel-model "claude-3-5-sonnet-20240620"
+  ;;  gptel-backend (gptel-make-anthropic "Claude"
+  ;;                  :stream t :key (ub/load-key-anthropic-token)))
+
+  (gptel-make-anthropic "Claude"
+    :stream t :key #'ub/load-key-anthropic-token)
+
+  (gptel-make-perplexity "Perplexity" ;Any name you want
+    :key #'ub/load-key-perplexity-token ;can be a function that returns the key
+    :stream t) ;If you want responses to be streamed
+
+  (gptel-make-openai "DeepSeek"       ;Any name you want
+    :host "api.deepseek.com"
+    :endpoint "/chat/completions"
+    :stream t
+    :key #'ub/load-key-deepseek-token               ;can be a function that returns the key
+    :models '(deepseek-chat deepseek-coder))
   )
 
-(load-file (expand-file-name "src/random-unique-theme.el" doom-user-dir))
 
-(load-file (expand-file-name "src/credentials.el" doom-user-dir))
+(use-package! aider
+  :config
+  ;;(setq aider-args '("--model" "gpt-4o-mini"))
+  (setq aider-args '("--model" "anthropic/claude-3-5-sonnet-20241022 --no-auto-commits"))
+  )
+
+
+;; REF: https://www.perplexity.ai/search/emacs-tab-bar-mode-organizatio-Ie0PFY1ZTp2baBnSMYMcEA
+;; REF: [[https://www.youtube.com/watch?v=C7ZlNRbWdVI&t=166s][Organize Your Windows with the Tab Bar in Emacs 27 - YouTube]]
+(tab-bar-mode 1)
+(setq tab-bar-show 1)          ; Only show bar when multiple tabs exist
+(setq tab-bar-close-button-show nil)  ; Hide close button
+(setq tab-bar-tab-hints t)     ; Show tab numbers
+(setq tab-bar-button-margin 1)
+;; Removing Tab Gaps
+(setq tab-bar-separator (propertize " " 'display '((space :width 0))))
+
+
+
+(load-file (expand-file-name "src/random-unique-theme.el" doom-user-dir))
 
 (load-file (expand-file-name "src/completions.el" doom-user-dir))
 
@@ -627,11 +668,11 @@
      (progn
        (load-file (expand-file-name "src/org-mode-server-config.el" doom-user-dir))
 
-       (load-file (expand-file-name "src/org-roam-autoload.el" doom-user-dir))
-       (load-file (expand-file-name "src/org-roam-config.el" doom-user-dir))
+       ;;(load-file (expand-file-name "src/org-roam-autoload.el" doom-user-dir))
+       ;;(load-file (expand-file-name "src/org-roam-config.el" doom-user-dir))
        ;; NOTE should be loaded after org-roam-config.el
        ;;(load-file (expand-file-name "src/yequake.el" doom-user-dir))
-       (load-file (expand-file-name "src/org-protocol-capture-windows.el" doom-user-dir))
+       ;;(load-file (expand-file-name "src/org-protocol-capture-windows.el" doom-user-dir))
        (load-file (expand-file-name "src/org-agenda-config.el" doom-user-dir))
        )))
 

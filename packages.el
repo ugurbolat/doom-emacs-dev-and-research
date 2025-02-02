@@ -133,9 +133,6 @@
 
                                         ;(package! anaconda-mode :disable t)
 
-;;(package! emacsql-sqlite-builtin)
-
-
 
 ;; jwiegley/emacs-async
 (package! async
@@ -371,3 +368,10 @@
            :repo "calancha/dired-du"))
 
 (package! detached)
+
+;; REF: https://github.com/karthink/gptel/issues/501
+(package! transient :pin "00fabc76eb3dc75f742d8d2720c44e25e5772e8f")
+
+(package! aider
+  :recipe (:host github
+           :repo "tninja/aider.el"))
