@@ -645,7 +645,7 @@
 (setq tab-bar-button-margin 1)
 ;; Removing Tab Gaps
 (setq tab-bar-separator (propertize " " 'display '((space :width 0))))
-
+(setq tab-bar-new-button nil) ;; who's gonna click that button anyway :p
 
 
 (load-file (expand-file-name "src/random-unique-theme.el" doom-user-dir))
