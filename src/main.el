@@ -380,23 +380,10 @@
       (setq detached-buffer-session detached-current-session)
       (vterm-send-C-e)
       (vterm-send-return)))
-
   ;; Apply the advice to override `detached-vterm-send-input`
   (advice-add 'detached-vterm-send-input :override #'my/detached-vterm-send-input-fix)
-
   )
 
-
-;; (use-package! dired-rsync
-;;   ;;:ensure t
-;;   ;;:defer t
-;;   :bind
-;;   (:map dired-mode-map
-;;         ("r" . dired-rsync))
-;;   :config
-;;   (add-to-list 'mode-line-misc-info '(:eval dired-rsync-modeline-status 'append))
-;;   (setq dired-rsync-options "-azh --progress")
-;;   )
 (use-package! dired-rsync
   :after dired
   :bind
@@ -406,61 +393,8 @@
   ;;(setq dired-rsync-command "rsync")
   (setq dired-rsync-options "-azh --progress")
   (setq dired-rsync-unmark-on-completion t)
-
-  (add-to-list 'mode-line-misc-info '(:eval dired-rsync-modeline-status 'append))
-
-  ;; (setq dired-rsync-success-hook '(dired-rsync--default-success))
-  ;; (setq dired-rsync-failed-hook '(dired-rsync--pop-to-rsync-failed-buf))
-
-  ;; ;; Update modeline with progress
-  ;; (defun dired-rsync--default-success ()
-  ;;   (message "dired-rsync: Transfer completed successfully."))
-
-  ;; ;; Show rsync output buffer automatically
-  ;; (defun dired-rsync--pop-to-rsync-output ()
-  ;;   "Automatically pop up the rsync output buffer."
-  ;;   (let ((buf (get-buffer (car (dired-rsync--get-proc-buffers)))))
-  ;;     (when buf
-  ;;       (pop-to-buffer buf))))
-
-  ;; ;; Hook to show output when rsync starts
-  ;; (add-hook 'dired-rsync-success-hook 'dired-rsync--pop-to-rsync-output)
-  ;; (add-hook 'dired-rsync-failed-hook 'dired-rsync--pop-to-rsync-output)
+  ;;(add-to-list 'mode-line-misc-info '(:eval dired-rsync-modeline-status 'append)
   )
-
-
-;; (defun dired-rsync--filter (proc string)
-;;   "Process `PROC` rsync filter, insert `STRING` into buffer.
-
-;; Parses the total transfer percentage instead of per-file progress."
-;;   (let ((total-progress nil))
-;;     ;; Match the "x% complete" from rsync --info=progress2
-;;     (when (string-match "\\([0-9]+\\)%\\s-+total" string)
-;;       (setq total-progress (match-string 1 string)))
-
-;;     ;; Update modeline only if progress is detected
-;;     (when total-progress
-;;       (setq dired-rsync-modeline-status
-;;             (format " R:%s%%" total-progress))
-;;       (force-mode-line-update)))
-
-;;   ;; Insert text into process buffer
-;;   (when (buffer-live-p (process-buffer proc))
-;;     (with-current-buffer (process-buffer proc)
-;;       (let ((moving (= (point) (process-mark proc))))
-;;         (save-excursion
-;;           (goto-char (process-mark proc))
-;;           (insert string)
-;;           (set-marker (process-mark proc) (point)))
-;;         (if moving (goto-char (process-mark proc)))))))
-
-
-;; ;; (after! doom-modeline
-;; ;;   (setq doom-modeline-continuous-word-count-modes '(markdown-mode org-mode text-mode))
-;; ;;   (add-to-list 'global-mode-string '(:eval dired-rsync-modeline-status)))
-;; (after! doom-modeline
-;;   (add-to-list 'global-mode-string '(:eval dired-rsync-modeline-status)))
-
 
 (use-package! dired-rsync-transient
   :bind (:map dired-mode-map

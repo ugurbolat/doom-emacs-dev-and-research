@@ -113,51 +113,10 @@
 
 
 
-;; REF: https://github.com/minad/consult?tab=readme-ov-file#grep-and-find
-;; search pattern #regexps#filter-string
-;; regexps: regular expression to search for
-;; filter-string: string to filter the results withing the first search
-;; TODO start wihout hashtag and search for files with consult-ripgrep
-;; (defun ub/consult-ripgrep-wo-hashtag (&optional dir initial)
+;; ;; TODO this doesn't show multiline
+;; (defun ub/python-summary-at-current-directory-w-occur ()
 ;;   (interactive)
-;;   (let ((consult--async-split-initial "asd"))
-;;     (consult-ripgrep dir initial)))
-;; (defun my-consult-ripgrep-advice (orig-func &optional dir initial)
-;;   "Advice to adjust initial input for `consult-ripgrep`.
-;; Remove the automatic `#` prefix if present."
-;;   (interactive "P")
-;;   ;; Check if initial exists and modify it, or set it to empty as an example.
-;;   (let ((new-initial (if (string-prefix-p "#" initial)
-;;                          (substring initial 1)
-;;                        (or initial ""))))
-;;     (funcall orig-func dir new-initial)))
-;; (advice-add 'consult-ripgrep :around #'my-consult-ripgrep-advice)
-
-
-
-;; Nuke occur buffer, grep buffer is superior due to wgrep change mode!
-;; ;; TODO considering searching with consult etc.
-;; (defun ub/python-summary-at-current-buffer-w-occur ()
-;;   (interactive)
-;;   (occur "\\<def\\>\\|\\<class\\>"))
-
-;; (defun ub/python-search-uncommented-breakpoint-at-current-buffer-w-occur ()
-;;   (interactive)
-;;   (occur "^[^#]*breakpoint()"))
-
-;; (defun ub/python-commented-breakpoint-at-current-buffer-w-occur ()
-;;   (interactive)
-;;   (occur "^[^#]*#.*breakpoint("))
-
-;; TODO customize grep output face/style with awk to align the output
-;; (setq grep-command
-;;       "find . -type f ! -path './' -exec grep --color=auto -nH --null -e YOUR_PATTERN_HERE {} + | awk '{printf \"%s:%-4s :%s\\n\", $1,$2,$3}'")
-
-
-;; TODO this doesn't show multiline
-(defun ub/python-summary-at-current-directory-w-occur ()
-  (interactive)
-  (rgrep "\\<def\\>\\|\\<class\\>" "*.py" "./" nil))
+;;   (rgrep "\\<def\\>\\|\\<class\\>" "*.py" "./" nil))
 
 
 ;; (defun ub/python-imports-at-current-file-w-occur ()
@@ -202,7 +161,6 @@
  '^\\s*(from\\s+\\S+\\s+import\\s+\\((?:[^()]*|\\n)*\\)|from\\s+\\S+\\s+import\\s+\\S+|import\\s+\\S+)'\
  --glob '*.py' ."))
     (grep grep-command)))
-
 
 (defun ub/python-commented-breakpoints-at-buffer-w-grep ()
   "Find commented-out breakpoints in the current buffer using ripgrep."
