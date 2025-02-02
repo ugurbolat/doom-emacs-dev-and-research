@@ -45,6 +45,11 @@
 ;;  #'(lambda () (setq doom-theme 'ef-dream))
 ;;  #'(lambda () (setq doom-theme 'ef-rosa)))
 
+(ub/run-if-else-server-active
+ ;;#'(lambda () (setq doom-theme 'doom-dracula))
+ #'(lambda () (setq doom-theme 'ef-rosa))
+ #'(lambda () (load-file (expand-file-name "src/random-unique-theme.el" doom-user-dir))))
+
 
 ;;(setq doom-theme 'modus-vivendi)
 ;;(setq doom-theme 'doom-vibrant)
@@ -647,8 +652,6 @@
 (setq tab-bar-separator (propertize " " 'display '((space :width 0))))
 (setq tab-bar-new-button nil) ;; who's gonna click that button anyway :p
 
-
-(load-file (expand-file-name "src/random-unique-theme.el" doom-user-dir))
 
 (load-file (expand-file-name "src/completions.el" doom-user-dir))
 

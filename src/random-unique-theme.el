@@ -1,6 +1,6 @@
 (defvar ub/favorite-themes '(
-                             ef-dream ef-rosa ef-winter
-                             ;;ef-summer ;; beautiful but light
+                             ef-dream ef-winter
+                             ;;ef-rosa ;; this is our default server theme :)
                              ef-autumn ef-elea-dark ef-symbiosis ef-trio-dark ef-maris-dark
                              )
   "List of themes to randomly choose from.")
