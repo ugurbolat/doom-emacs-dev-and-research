@@ -2,6 +2,13 @@
 
 ;;(message "org-roam loading...")
 
+;; (use-package! emacsql-sqlite-builtin)
+;; (after! org-roam
+;;   (setq org-roam-database-connector 'sqlite-builtin))
+(after! org-roam
+  (setq org-roam-database-connector 'sqlite3))
+
+
 (use-package! org-roam
   ;;:ensure (:fetcher github :repo "org-roam/org-roam")
   ;;:defer 0.1
@@ -86,6 +93,7 @@
          ;;("C-c n j" . org-roam-dailies-capture-today)
          ("C-c n j" . ub/org-roam-dailies-capture-today-respect-my-midnight))
   :config
+
   ;; If you're using a vertical completion framework, you might want a more informative completion interface
   (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
 

@@ -578,12 +578,12 @@
   )
 
 
-;; dummy org-roam should be replaced by org-roam when server is up
-(use-package! org-roam
-  ;;:ensure (:fetcher github :repo "org-roam/org-roam")
-  ;;:defer 0.1
-  ;;:defer t  ; doom already defers it
-  :custom
-  (org-roam-directory (expand-file-name "dummy" ub/roam-root-dir)))
+;; ;; dummy org-roam should be replaced by org-roam when server is up
+;; (use-package! org-roam
+;;   ;;:ensure (:fetcher github :repo "org-roam/org-roam")
+;;   ;;:defer 0.1
+;;   ;;:defer t  ; doom already defers it
+;;   :custom
+;;   (org-roam-directory (expand-file-name "dummy" ub/roam-root-dir)))
 
 (message "org-mode-config.el load end")
