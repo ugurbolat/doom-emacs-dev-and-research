@@ -77,7 +77,47 @@
   (org-ai-global-mode) ; installs global keybindings on C-c M-a
   :config
   ;;(setq org-ai-default-chat-model "gpt-4") ; if you are on the gpt-4 beta:
-  (setq org-ai-default-chat-model "gpt-4-turbo")
+  ;;(setq org-ai-default-chat-model "gpt-4-turbo")
+
+
+  (setq openai-api-key-path (expand-file-name "key-openai.gpg" doom-user-dir))
+  (setq anthropic-api-key-path (expand-file-name "key-anthropic.gpg" doom-user-dir))
+
+
+  (defvar org-ai-openai-api-token "")
+
+  (defun get-key-from-file (api-key-path)
+    (with-temp-buffer
+      (insert-file-contents api-key-path)
+      (string-trim (buffer-string))))
+
+
+  (defun set-openai-key ()
+    (interactive)
+    (let ((openai-key-path (read-string "openai key path, default:" openai-api-key-path)))
+      (progn
+        (setq org-ai-openai-api-token (get-key-from-file openai-key-path))
+        (message (concat "loaded org-openai-api-token"))
+        (org-ai-switch-chat-model))))
+
+
+  (defun set-anthropic-key ()
+    (interactive)
+    (let ((anthropic-key-path (read-string "anthropic key path, default:" anthropic-api-key-path)))
+      (progn
+        (setq org-ai-anthropic-api-token (get-key-from-file anthropic-key-path))
+        (message (concat "set anthropic api token"))
+        (setq org-ai-openai-api-token org-ai-anthropic-api-token)
+        (setq org-ai-service "anthropic")
+        (org-ai-switch-chat-model))))
+
+  (setq org-ai-chat-models '("gpt-3.5-turbo" "gpt-3.5-turbo-16k" "gpt-4" "gpt-4-32k" "gpt-4-vision-preview"
+                             "gpt-4-turbo" "gpt-4o"
+                             ;; REF https://docs.anthropic.com/en/docs/about-claude/models
+                             "claude-3-5-sonnet-latest" "claude-3-5-sonnet-20241022" "claude-3-5-sonnet-20240620" "claude-3-5-haiku-20241022" "claude-3-opus-20240229"
+                             ))
+
+  (setq org-ai-default-chat-model "gpt-4o")
   (setq org-ai-image-model "dall-e-3")
   (setq org-ai-image-default-size "1024x1024") ; vs. 1024x1792 or 1792x1024
   (setq org-ai-image-default-count 1)
@@ -150,6 +190,11 @@
   ;;(setq org-download-image-org-width 600)
   (setq org-download-annotate-function 'ignore)
   (setq org-download-annotate-function (lambda (_link) ""))
+
+  ;; doesn't work REF: https://github.com/abo-abo/org-download/issues/215
+  ;; (add-hook 'org-mode-hook
+  ;;           (lambda ()
+  ;;             (kill-local-variable 'dnd-protocol-alist)))
   )
 
 
@@ -321,7 +366,8 @@
   (plist-put org-format-latex-options :foreground nil)
   (plist-put org-format-latex-options :background nil)
   ;; usepackage latex
-  (add-to-list 'org-latex-packages-alist '("" "braket" t))
+  ;;(add-to-list 'org-latex-packages-alist '("" "braket" t))
+  (add-to-list 'org-latex-packages-alist '("" "physics" t))
   (add-to-list 'org-latex-packages-alist '("" "bm" t))
   ;; for tables
   ;; REF https://pandas.pydata.org/docs/reference/api/pandas.io.formats.style.Styler.to_latex.html

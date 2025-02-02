@@ -11,8 +11,14 @@
 (defun ub/run-if-else-server-active (body-fun &optional else-fun)
   "Execute BODY-FUN if an Emacs server is running, else execute ELSE-FUN."
   (if (bound-and-true-p server-process)
-      (funcall body-fun)
-    (when else-fun (funcall else-fun))))
+      (progn
+        (message "server is active")
+        (funcall body-fun))
+    (when else-fun
+      (progn
+        (message "server is not active")
+        (funcall else-fun))
+      )))
 
 ;;;###autoload
 (defun ub/insert-commit-prefix-w-emoji ()

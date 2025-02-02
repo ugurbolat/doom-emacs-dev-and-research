@@ -39,10 +39,20 @@
   "Search for files with `grep' in ~/main/org."
   (interactive "P")
   (consult-ripgrep "~/main/org" initial))
-(defun ub/consult-ripgrep-current-dir (&optional initial)
+(defun ub/consult-ripgrep-dir (&optional initial)
   "Search for files with `grep' in current directory."
   (interactive "P")
   (consult-ripgrep "./" initial))
+
+(defun ub/consult-ripgrep-buffer (&optional initial)
+  "Search in current file using ripgrep."
+  (interactive "P")
+  (when-let ((file (buffer-file-name)))
+    (let ((consult-ripgrep-args
+           (format "rg --null --line-buffered --color=never --max-columns=500 --no-heading --line-number -g %s"
+                   (file-name-nondirectory file))))
+      (consult-ripgrep (file-name-directory file) initial))))
+
 
 
 ;; `consult-find` that asks the user dir which can be found interactively in minibuffer
@@ -64,10 +74,39 @@
   :bind
   (("C-c f r" . consult-recent-file)
    ("C-x C-v" . consult-buffer)
-   ("C-x C-'" . ub/consult-ripgrep-current-dir)
+   ("C-x C-'" . ub/consult-ripgrep-dir)
    ("C-S-s" . consult-line))
   :custom
-  (consult-line-start-from-top nil))
+  (consult-line-start-from-top nil)
+  :config
+  (setq consult-preview-key '("<right>" "<tab>"))
+  (consult-customize
+   ;; Disable preview for `consult-theme' completely.
+   ;;consult-theme :preview-key nil
+   ;; Set preview for `consult-buffer' to key `M-.'
+   consult-buffer :preview-key '(
+                                 ;;"S-<down>" "S-<up>"
+                                 "<right>"
+                                 "<tab>"
+                                 )
+   ;; For `consult-line' change the prompt and specify multiple preview
+   ;; keybindings. Note that you should bind <S-up> and <S-down> in the
+   ;; `minibuffer-local-completion-map' or `vertico-map' to the commands which
+   ;; select the previous or next candidate.
+   consult-line :prompt "Search: "
+   ;; :preview-key '(
+   ;;                ;;"S-<down>" "S-<up>"
+   ;;                "<right>"
+   ;;                "<tab>"
+   ;;                )
+   consult-ripgrep
+   ;; :preview-key '(
+   ;;                ;;"S-<down>" "S-<up>"
+   ;;                "<right>"
+   ;;                "<tab>"
+   ;;                )
+   ))
+
 
 
 ;; IN BUFFER
@@ -214,41 +253,46 @@
   :defer t
   :config
   (setq eldoc-echo-area-use-multiline-p nil)
-  (setq eldoc-echo-area-prefer-doc-buffer t))
+  (setq eldoc-echo-area-prefer-doc-buffer t)
+  ;; TODO doesn't work atm
+  (add-to-list 'eglot-server-programs
+               `(csharp-mode . ("/home/bolatu/main/apps/omnisharp-linux-x64/run" "-lsp")))
+  )
 
 
-;;;###autoload
-(defun copilot-shutup ()
-  (interactive)
-  (setq copilot-idle-delay nil))
 
-;;;###autoload
-(defun copilot-keep-talking ()
-  (interactive)
-  (setq copilot-idle-delay 0))
+;; ;;;###autoload
+;; (defun copilot-shutup ()
+;;   (interactive)
+;;   (setq copilot-idle-delay nil))
 
-(use-package! copilot
-  :defer t
-  ;;:ensure (:fetcher github :repo "zerolfx/copilot.el")
-  :hook (
-         ;;(prog-mode . copilot-mode)
-         ;;(org-mode . copilot-mode)
-         (copilot-mode . (lambda ()
-                           (setq-local copilot--indent-warning-printed-p t))))
-  :config
-  (setq copilot-idle-delay 0)
+;; ;;;###autoload
+;; (defun copilot-keep-talking ()
+;;   (interactive)
+;;   (setq copilot-idle-delay 0))
 
-  (setq copilot-indent-offset-warning-disable 't)
-  :bind (:map copilot-completion-map
-              ("<tab>" . 'copilot-accept-completion)
-              ("TAB" . 'copilot-accept-completion)
-              ("C-TAB" . 'copilot-accept-completion-by-word)
-              ("C-<tab>" . 'copilot-accept-completion-by-word))
-  :bind (:map prog-mode-map
-              ;; C-S-; NOTE C-; good old unintelligent complete
-              ("C-:" . 'copilot-complete)))
-;; NOTE copilot--start-agent: Node 18+ is required but found 16.2
-;; but works with other doom-emacs version, upgrading might break the other setups...
+;; (use-package! copilot
+;;   :defer t
+;;   ;;:ensure (:fetcher github :repo "zerolfx/copilot.el")
+;;   :hook (
+;;          ;;(prog-mode . copilot-mode)
+;;          ;;(org-mode . copilot-mode)
+;;          (copilot-mode . (lambda ()
+;;                            (setq-local copilot--indent-warning-printed-p t))))
+;;   :config
+;;   (setq copilot-idle-delay 0)
+
+;;   (setq copilot-indent-offset-warning-disable 't)
+;;   :bind (:map copilot-completion-map
+;;               ("<tab>" . 'copilot-accept-completion)
+;;               ("TAB" . 'copilot-accept-completion)
+;;               ("C-TAB" . 'copilot-accept-completion-by-word)
+;;               ("C-<tab>" . 'copilot-accept-completion-by-word))
+;;   :bind (:map prog-mode-map
+;;               ;; C-S-; NOTE C-; good old unintelligent complete
+;;               ("C-:" . 'copilot-complete)))
+;; ;; NOTE copilot--start-agent: Node 18+ is required but found 16.2
+;; ;; but works with other doom-emacs version, upgrading might break the other setups...
 
 
 (message "completion.el load end")

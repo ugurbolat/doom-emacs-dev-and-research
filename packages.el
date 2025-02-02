@@ -87,10 +87,10 @@
   :recipe (:host github
            :repo "rksm/org-ai"))
 
-(package! copilot
-  :recipe (:host github
-           :repo "zerolfx/copilot.el"
-           :files ("*.el" "dist")))
+;; (package! copilot
+;;   :recipe (:host github
+;;            :repo "zerolfx/copilot.el"
+;;            :files ("*.el" "dist")))
 
 (if (version< emacs-version "29.0")
     (package! eglot
@@ -131,7 +131,7 @@
 ;;            :files (:defaults "etc"))
 ;;   :pin "fff6c888065588527b1c1d7dd7e41c29ef767e17")
 
-;;(package! anaconda-mode :disable t)
+                                        ;(package! anaconda-mode :disable t)
 
 ;;(package! emacsql-sqlite-builtin)
 
@@ -144,13 +144,17 @@
 
 ;;stsquad/dired-rsync
 (package! dired-rsync
-  :recipe (:host github
-           :repo "stsquad/dired-rsync"))
+          :recipe (:host github
+                         :repo "stsquad/dired-rsync"))
+(package! dired-rsync-transient
+          :recipe (:host github
+                         :repo "stsquad/dired-rsync"))
+
 
 ;;emacsmirror/git-timemachine
 (package! git-timemachine
-  :recipe (:host github
-           :repo "emacsmirror/git-timemachine"))
+          :recipe (:host github
+                         :repo "emacsmirror/git-timemachine"))
 
 ;;protesilaos/spacious-padding
 (package! spacious-padding
@@ -274,17 +278,22 @@
 
 ;;purcell/exec-path-from-shell
 (package! exec-path-from-shell
-  :recipe (:host github
-           :repo "purcell/exec-path-from-shell"))
+          :recipe (:host github
+                         :repo "purcell/exec-path-from-shell"))
 
+;; ;; protesilaos/modus-themes
+;; (package! modus-themes
+;;   :recipe (:host github
+;;            :repo "protesilaos/modus-themes"))
 ;; protesilaos/modus-themes
 (package! modus-themes
-  :recipe (:host github
-           :repo "protesilaos/modus-themes"))
+  :recipe (
+           :host github
+           :repo "protesilaos/ef-themes"))
 
 (package! zotra
-  :recipe (:host github
-           :repo "mpedramfar/zotra"))
+          :recipe (:host github
+                         :repo "mpedramfar/zotra"))
 
 (package! doom-snippets
   :recipe (:host github
@@ -316,3 +325,49 @@
 (package! rmsbolt
   :recipe (:host gitlab
            :repo "jgkamat/rmsbolt"))
+
+(package! gptel
+  :recipe (:host github
+           :repo "karthink/gptel"))
+
+(package! command-log-mode
+  :recipe (:host github
+           :repo "lewang/command-log-mode"))
+
+(package! centered-cursor-mode
+  :recipe (:host github
+           :repo "emacsmirror/centered-cursor-mode"))
+
+(package! scroll-restore)
+
+(package! nerd-icons-dired
+  :recipe (:host github
+           :repo "rainstormstudio/nerd-icons-dired"))
+
+(package! scf-mode
+  :recipe (:host github
+           :repo "lewang/scf-mode"))
+
+(package! ibuffer-sidebar
+  :recipe (:host github
+           :repo "jojojames/ibuffer-sidebar"))
+
+(package! ibuffer-vc
+  :recipe (:host github
+           :repo "purcell/ibuffer-vc"))
+
+(package! ibuffer-vc
+  :recipe (:host github
+           :repo "purcell/ibuffer-vc"))
+
+(package! alert
+  :recipe (:host github
+           :repo "jwiegley/alert"))
+
+
+
+(package! dired-du
+  :recipe (:host github
+           :repo "calancha/dired-du"))
+
+(package! detached)

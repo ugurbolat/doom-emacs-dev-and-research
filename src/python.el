@@ -135,44 +135,182 @@
 
 
 
-;; TODO considering searching with consult etc.
-(defun ub/python-summary-on-current-buffer-w-occur ()
-  (interactive)
-  (occur "\\<def\\>\\|\\<class\\>"))
+;; Nuke occur buffer, grep buffer is superior due to wgrep change mode!
+;; ;; TODO considering searching with consult etc.
+;; (defun ub/python-summary-at-current-buffer-w-occur ()
+;;   (interactive)
+;;   (occur "\\<def\\>\\|\\<class\\>"))
 
-(defun ub/python-search-uncommented-breakpoint-on-current-buffer-w-occur ()
-  (interactive)
-  (occur "^[^#]*breakpoint()"))
+;; (defun ub/python-search-uncommented-breakpoint-at-current-buffer-w-occur ()
+;;   (interactive)
+;;   (occur "^[^#]*breakpoint()"))
 
-(defun ub/python-commented-breakpoint-on-current-buffer-w-occur ()
-  (interactive)
-  (occur "^[^#]*#.*breakpoint("))
+;; (defun ub/python-commented-breakpoint-at-current-buffer-w-occur ()
+;;   (interactive)
+;;   (occur "^[^#]*#.*breakpoint("))
 
 ;; TODO customize grep output face/style with awk to align the output
 ;; (setq grep-command
 ;;       "find . -type f ! -path './' -exec grep --color=auto -nH --null -e YOUR_PATTERN_HERE {} + | awk '{printf \"%s:%-4s :%s\\n\", $1,$2,$3}'")
 
-(defun ub/python-summary-on-current-directory-w-occur ()
+
+;; TODO this doesn't show multiline
+(defun ub/python-summary-at-current-directory-w-occur ()
   (interactive)
   (rgrep "\\<def\\>\\|\\<class\\>" "*.py" "./" nil))
 
-;; (defun ub/python-search-uncommented-breakpoint ()
-;;   (interactive)
-;;   (ub/consult-ripgrep-current-dir "'^[^#]*breakpoint()'"))
-(defun ub/python-search-uncommented-breakpoint-w-consult()
-  (interactive)
-  (ub/consult-ripgrep-current-dir "breakpoint()#^[^#]*breakpoint()"))
 
-;; (defun ub/python-commented-breakpoint ()
-;;   (interactive)
-;;   (ub/consult-ripgrep-current-dir "'^[^#]*#.*breakpoint()'"))
-(defun ub/python-commented-breakpoint-w-consult ()
-  (interactive)
-  (ub/consult-ripgrep-current-dir "breakpoint()##"))
+;; (defun ub/python-imports-at-current-file-w-occur ()
+;;   "Show Python imports in an occur buffer.
 
-(defun ub/python-summary-w-consult ()
+;; REF: https://chatgpt.com/c/679e28b6-4d68-800c-8229-1f13f59e42e6
+;; *Explanation:*
+
+;; - =^\\s-*= : Matches the start of a line followed by any amount of whitespace.
+;; - =\\( ... \\)= : Groups the following pattern.
+;; - =from\\s-+\\S-+\\s-+import\\s-+\\(([^)]*)\\|\\S-+\\)=: Matches =from module import ...=  statements, handling both single-line and multi-line imports:
+;;   - =from\\s-+=: Matches =from=  followed by whitespace.
+;;   - =\\S-+= : Matches the module name (a sequence of non-whitespace characters).
+;;   - =\\s-+import\\s-+=: Matches =import=  surrounded by whitespace.
+;;   - =\\(([^)]*)\\|\\S-+\\)= : Matches either:
+;;     - =([^)]*)= : Parentheses containing any characters except closing parentheses (handles multi-line imports).
+;;     - =\\S-+= : A sequence of non-whitespace characters (handles single-line imports).
+;; - =\\|import\\s-+\\S-+=: Matches =import module=  statements:
+;;   - =import\\s-+=: Matches =import=  followed by whitespace.
+;;   - =\\S-+= : Matches the module name.
+;; "
+;;   (interactive)
+;;   (let ((regexp "^\\s-*\\(from\\s-+\\S-+\\s-+import\\s-+\\(([^)]*)\\|\\S-+\\)\\|import\\s-+\\S-+\\)"))
+;;     (occur regexp)))
+
+(defun ub/python-imports-at-current-file-w-grep ()
+  "Show Python imports using grep mode."
   (interactive)
-  (ub/consult-ripgrep-current-dir "'\\<def\\>\\|\\<class\\>'"))
+  (when-let ((file (buffer-file-name)))
+    (let ((grep-command
+           (format "rg -U --multiline-dotall --line-number --no-heading --with-filename\
+ '^\\s*(from\\s+\\S+\\s+import\\s+\\((?:[^()]*|\\n)*\\)|from\\s+\\S+\\s+import\\s+\\S+|import\\s+\\S+)'\
+ %s"
+                   (shell-quote-argument file))))
+      (grep grep-command))))
+
+(defun ub/python-imports-at-current-dir-w-grep ()
+  "Search for Python import statements in the current directory using ripgrep."
+  (interactive)
+  (let ((grep-command
+         "rg -U --multiline-dotall --line-number --no-heading --with-filename\
+ '^\\s*(from\\s+\\S+\\s+import\\s+\\((?:[^()]*|\\n)*\\)|from\\s+\\S+\\s+import\\s+\\S+|import\\s+\\S+)'\
+ --glob '*.py' ."))
+    (grep grep-command)))
+
+
+(defun ub/python-commented-breakpoints-at-buffer-w-grep ()
+  "Find commented-out breakpoints in the current buffer using ripgrep."
+  (interactive)
+  (when-let ((file (buffer-file-name)))
+    (let ((grep-command
+           (format "rg -U --multiline-dotall --line-number --no-heading --with-filename\
+ '^\\s*#\\s*breakpoint\\s*()?'\
+ %s"
+                   (shell-quote-argument file))))
+      (grep grep-command))))
+
+(defun ub/python-commented-breakpoints-at-dir-w-grep ()
+  "Find commented-out breakpoints in the current buffer using ripgrep."
+  (interactive)
+  (let ((grep-command
+         "rg -U --multiline-dotall --line-number --no-heading --with-filename\
+ '^\\s*#\\s*breakpoint\\s*()?'\
+ --glob '*.py' ."))
+    (grep grep-command)))
+
+(defun ub/python-uncommented-breakpoints-at-buffer-w-grep ()
+  "Find uncommented-out breakpoints in the current buffer using ripgrep."
+  (interactive)
+  (when-let ((file (buffer-file-name)))
+    (let ((grep-command
+           (format "rg -U --multiline-dotall --line-number --no-heading --with-filename\
+ '^[^#]*\\bbreakpoint\\s*()?'\
+ %s"
+                   (shell-quote-argument file))))
+      (grep grep-command))))
+
+(defun ub/python-uncommented-breakpoints-at-dir-w-grep ()
+  "Find uncommented-out breakpoints in the current directory using ripgrep."
+  (interactive)
+  (let ((grep-command
+         "rg -U --multiline-dotall --line-number --no-heading --with-filename\
+ '^[^#]*\\bbreakpoint\\s*()?'\
+ --glob '*.py' ."))
+    (grep grep-command)))
+
+
+(defun ub/python-summary-at-buffer-w-grep ()
+  (interactive)
+  (when-let ((file (buffer-file-name)))
+    (let ((grep-command
+           (format "rg -U --multiline-dotall --line-number --no-heading --with-filename\
+ '^\\s*(def|class)\\s+\\w+\\s*\\([^)]*\\)?:?'\
+ %s"
+                   (shell-quote-argument file))))
+      (grep grep-command))))
+
+(defun ub/python-summary-at-dir-w-grep ()
+  (interactive)
+  (let ((grep-command
+         "rg -U --multiline-dotall --line-number --no-heading --with-filename\
+ '^\\s*(def|class)\\s+\\w+\\s*\\([^)]*\\)?:?'\
+ --glob '*.py' ."))
+    (grep grep-command)))
+
+
+
+(defun ub/python-uncommented-breakpoint-at-dir-w-consult()
+  (interactive)
+  (let ((consult-async-split-style nil))
+    (ub/consult-ripgrep-dir "^[^#]*breakpoint()")))
+
+(defun ub/python-commented-breakpoint-at-dir-w-consult ()
+  (interactive)
+  (let ((consult-async-split-style nil))
+    (ub/consult-ripgrep-dir "^[^#]*#.*breakpoint()")))
+
+(defun ub/python-uncommented-breakpoint-at-buffer-w-consult()
+  (interactive)
+  (let ((consult-async-split-style nil))
+    (ub/consult-ripgrep-buffer "^[^#]*breakpoint()")))
+
+(defun ub/python-commented-breakpoint-at-buffer-w-consult ()
+  (interactive)
+  (let ((consult-async-split-style nil))
+    (ub/consult-ripgrep-buffer "^[^#]*#.*breakpoint()")))
+
+
+(defun ub/python-summary-at-dir-w-consult ()
+  (interactive)
+  (let ((consult-async-split-style nil)) ;; disables default behavior of placing # in front
+    (ub/consult-ripgrep-dir "\\<def\\>\\|\\<class\\>")))
+
+(defun ub/python-summary-at-buffer-w-consult ()
+  (interactive)
+  (let ((consult-async-split-style nil))
+    (ub/consult-ripgrep-buffer "\\<def\\>\\|\\<class\\>")))
+
+
+
+(defun ub/python-imports-at-dir-w-consult ()
+  (interactive)
+  (let ((consult-async-split-style nil))
+    (ub/consult-ripgrep-dir "^\\s*\\(from\\|import\\)\\s+")))
+(defun ub/python-imports-at-buffer-w-consult ()
+  (interactive)
+  (let ((consult-async-split-style nil)
+        (consult-ripgrep-args "rg --multiline --multiline-dotall")
+        )
+    (ub/consult-ripgrep-buffer "^\\s*\\(from\\|import\\)\\s+")))
+
+
+
 
 ;; TODO
 ;; (defun ub/python-search-uncommented-breakpoint-w-wgrep()
@@ -181,6 +319,17 @@
 ;;   (embark-export)
 ;;   (wgrep-change-to-wgrep-mode)
 ;;   )
+
+
+(defun python-remove-unused-imports ()
+  "Remove unused imports from current Python buffer using autoflake."
+  (interactive)
+  (when (and buffer-file-name
+             (eq major-mode 'python-mode))
+    (let ((command (format "autoflake --in-place --remove-all-unused-imports %s"
+                           (shell-quote-argument buffer-file-name))))
+      (shell-command command)
+      (revert-buffer t t t))))
 
 
 (message "python.el load end")

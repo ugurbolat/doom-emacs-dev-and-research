@@ -2,6 +2,7 @@
 (message "crendentials.el 🤐 load start")
 
 (setq ub/key-openai-token (expand-file-name "key-openai.gpg" doom-user-dir))
+;;(setq ub/key-anthropic-token (expand-file-name "key-anthropic.gpg" doom-user-dir))
 
 (defun ub/load-encrypted-file (filename)
   "Load an encrypted file."
@@ -28,7 +29,9 @@
 ;;(setq epa-file-cache-passphrase-for-symmetric-encryption t)
 
 (defun set-api-key ()
-  (setq org-ai-openai-api-token (ub/load-key-openai-token)))
+  (setq org-ai-openai-api-token (ub/load-key-openai-token))
+  ;;(setq org-ai-anthr (ub/load-key-openai-token))
+  )
 
 (run-with-idle-timer 1 nil #'set-api-key)
 

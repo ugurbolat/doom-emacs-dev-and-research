@@ -40,21 +40,11 @@
   (server-start))
 
 
-(use-package modus-themes
-  :init
-  (setq modus-themes-to-toggle '(modus-operandi-deuteranopia modus-vivendi-deuteranopia))
-  ;; ... setting all variable that need to
-  ;; be present before loading the theme ...
-  :config
-  (load-theme (car modus-themes-to-toggle) t t)
-  :bind ("<f5>" . modus-themes-toggle))
+;; (ub/run-if-else-server-active
+;;  ;;#'(lambda () (setq doom-theme 'doom-dracula))
+;;  #'(lambda () (setq doom-theme 'ef-dream))
+;;  #'(lambda () (setq doom-theme 'ef-rosa)))
 
-
-
-(ub/run-if-else-server-active
- #'(lambda () (load-theme 'doom-dracula t))
- ;;#'(lambda () (load-theme 'modus-vivendi t)))
- #'(lambda () (load-theme 'modus-vivendi-tinted t)))
 
 ;;(setq doom-theme 'modus-vivendi)
 ;;(setq doom-theme 'doom-vibrant)
@@ -151,6 +141,57 @@
   :config
   (pixel-scroll-mode))
 
+(setq mouse-wheel-tilt-scroll 't)
+
+;; (setq scroll-margin 1
+;;       scroll-conservatively 0
+;;       scroll-up-aggressively 0.01
+;;       scroll-down-aggressively 0.01)
+;; Recenter when returning to original position
+(setq scroll-restore-recenter t)
+
+
+(setq grep-highlight-matches nil)
+;; get proper Python syntax highlighting in grep results
+(add-hook 'grep-mode-hook
+          (lambda ()
+            (font-lock-add-keywords
+             nil
+             '((".*\\.py:[0-9]+:" . 'font-lock-constant-face)
+               ("\\(def\\|class\\) \\([a-zA-Z0-9_]+\\)" 
+                (1 'font-lock-keyword-face)
+                (2 'font-lock-function-name-face))))))
+
+(set-popup-rules!
+ '(("^\\*grep"
+    :side left
+    :width 80
+    :select t
+    :quit nil)))
+
+
+;; too shorten filenames in grep
+(use-package scf-mode
+  :config
+  (add-hook 'grep-mode-hook (lambda () (scf-mode 1))))
+
+(require 'scroll-restore)
+(scroll-restore-mode 1)
+
+(use-package nerd-icons-dired
+  :config
+  :hook (dired-mode . (lambda ()
+                        (interactive)
+                        (unless (file-remote-p default-directory)
+                          (nerd-icons-dired-mode)))))
+
+
+(use-package dired-subtree
+  :config
+  (advice-add 'dired-subtree-toggle :after (lambda ()
+                                             (interactive)
+                                             (when nerd-icons-dired-mode
+                                               (revert-buffer)))))
 
 (use-package! dired
   ;;:ensure nil
@@ -158,6 +199,11 @@
   ;;(global-set-key (kbd "C-c o -") 'dired-jump)
   (setq delete-by-moving-to-trash 't)
   (add-hook 'dired-mode-hook #'dired-hide-details-mode))
+
+(use-package! dired-du
+  :config
+  ;;(add-hook 'dired-mode-hook #'dired-du-mode)
+  )
 
 (use-package! dired-hacks
   ;;:ensure (:fetcher github :repo "Fuco1/dired-hacks")
@@ -242,11 +288,49 @@
   (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
   (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
 
+  (setq dired-sidebar-theme 'nerd-icons)
   ;;(setq dired-sidebar-subtree-line-prefix "_")
-  (setq dired-sidebar-theme 'vscode)
+  ;;(setq dired-sidebar-theme 'vscode)
   (setq dired-sidebar-use-term-integration t)
-  ;;(setq dired-sidebar-use-custom-font t)
+  (setq dired-sidebar-use-custom-font t)
   )
+
+(setq ibuffer-expert t) ; stop yes no prompt on delete
+
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("dired" (mode . dired-mode))
+               ("org" (mode . org-mode))
+               ;;("magit" (name . "^magit"))
+               ("latex" (or (mode . latex-mode)
+                            (filename . "LaTeXMode")))
+               ("planner" (or
+                           (name . "^\\*Calendar\\*$")
+                           (name . "^\\*Org Agenda\\*")))
+               ("emacs" (or
+                         (name . "^\\*scratch\\*$")
+                         (name . "^\\*Messages\\*$")))))))
+
+(add-hook 'ibuffer-hook
+          (lambda ()
+            (let ((groups (ibuffer-vc-generate-filter-groups-by-vc-root)))
+              (setq ibuffer-filter-groups
+                    (append groups (cdr (assoc "default" ibuffer-saved-filter-groups))))
+              (unless (eq ibuffer-sorting-mode 'alphabetic)
+                (ibuffer-do-sort-by-alphabetic)))))
+
+
+(use-package! ibuffer-sidebar
+  :commands (ibuffer-sidebar-toggle-sidebar)
+  :config
+  (setq ibuffer-sidebar-use-custom-font t)
+  (setq ibuffer-sidebar-face `(:family "Helvetica" :height 140)))
+
+(defun sidebar-toggle-both-ibuffer-and-dired ()
+  "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
+  (interactive)
+  (ibuffer-sidebar-toggle-sidebar)
+  (dired-sidebar-toggle-sidebar))
 
 ;; (use-package dired-hide-dotfiles
 ;;   ;;:ensure t
@@ -261,18 +345,127 @@
   :hook
   (dired-mode . diredfl-mode))
 
-(use-package! async
-  ;;:ensure t
-  :defer t
-  :custom
-  (dired-async-mode 1))
+;; (use-package! async
+;;   ;;:ensure t
+;;   ;;:defer t
+;;   :custom
+;;   (dired-async-mode 1))
 
+
+(use-package! detached
+  :init
+  (detached-init)
+  :custom
+  (detached-show-output-on-attach t)
+  (detached-terminal-data-command system-type)
+  (detached-shell-program "/bin/zsh")
+  :config
+  (setq detached-notification-function #'detached-extra-alert-notification)
+
+  (defun my/detached-vterm-send-input-fix (&optional detached)
+    "Fix `detached-vterm-send-input' to exclude shell prompt."
+    (interactive)
+    (let* ((line (buffer-substring-no-properties (vterm-beginning-of-line) (vterm-end-of-line)))
+           ;; Remove shell prompt (assuming format like "bolatu:~$ command")
+           ;;(input (string-trim (replace-regexp-in-string "^[^ ]+[:~]+\\$ " "" line))) ;; for bash
+           (input (string-trim (replace-regexp-in-string "$ " "" line))) ;; zsh
+           (detached-session-origin 'vterm)
+           (detached-session-action detached-vterm-session-action)
+           (detached-session-mode (if detached 'detached 'attached))
+           (detached-current-session (detached-create-session input))
+           (command (detached-session-start-command detached-current-session :type 'string)))
+      (vterm-send-C-a)
+      (vterm-send-C-k)
+      (process-send-string vterm--process command)
+      (setq detached-buffer-session detached-current-session)
+      (vterm-send-C-e)
+      (vterm-send-return)))
+
+  ;; Apply the advice to override `detached-vterm-send-input`
+  (advice-add 'detached-vterm-send-input :override #'my/detached-vterm-send-input-fix)
+
+  )
+
+
+;; (use-package! dired-rsync
+;;   ;;:ensure t
+;;   ;;:defer t
+;;   :bind
+;;   (:map dired-mode-map
+;;         ("r" . dired-rsync))
+;;   :config
+;;   (add-to-list 'mode-line-misc-info '(:eval dired-rsync-modeline-status 'append))
+;;   (setq dired-rsync-options "-azh --progress")
+;;   )
 (use-package! dired-rsync
-  ;;:ensure t
-  :defer t
+  :after dired
   :bind
   (:map dired-mode-map
-        ("r" . dired-rsync)))
+        ("r" . dired-rsync))
+  :config
+  ;;(setq dired-rsync-command "rsync")
+  (setq dired-rsync-options "-azh --progress")
+  (setq dired-rsync-unmark-on-completion t)
+
+  (add-to-list 'mode-line-misc-info '(:eval dired-rsync-modeline-status 'append))
+
+  ;; (setq dired-rsync-success-hook '(dired-rsync--default-success))
+  ;; (setq dired-rsync-failed-hook '(dired-rsync--pop-to-rsync-failed-buf))
+
+  ;; ;; Update modeline with progress
+  ;; (defun dired-rsync--default-success ()
+  ;;   (message "dired-rsync: Transfer completed successfully."))
+
+  ;; ;; Show rsync output buffer automatically
+  ;; (defun dired-rsync--pop-to-rsync-output ()
+  ;;   "Automatically pop up the rsync output buffer."
+  ;;   (let ((buf (get-buffer (car (dired-rsync--get-proc-buffers)))))
+  ;;     (when buf
+  ;;       (pop-to-buffer buf))))
+
+  ;; ;; Hook to show output when rsync starts
+  ;; (add-hook 'dired-rsync-success-hook 'dired-rsync--pop-to-rsync-output)
+  ;; (add-hook 'dired-rsync-failed-hook 'dired-rsync--pop-to-rsync-output)
+  )
+
+
+;; (defun dired-rsync--filter (proc string)
+;;   "Process `PROC` rsync filter, insert `STRING` into buffer.
+
+;; Parses the total transfer percentage instead of per-file progress."
+;;   (let ((total-progress nil))
+;;     ;; Match the "x% complete" from rsync --info=progress2
+;;     (when (string-match "\\([0-9]+\\)%\\s-+total" string)
+;;       (setq total-progress (match-string 1 string)))
+
+;;     ;; Update modeline only if progress is detected
+;;     (when total-progress
+;;       (setq dired-rsync-modeline-status
+;;             (format " R:%s%%" total-progress))
+;;       (force-mode-line-update)))
+
+;;   ;; Insert text into process buffer
+;;   (when (buffer-live-p (process-buffer proc))
+;;     (with-current-buffer (process-buffer proc)
+;;       (let ((moving (= (point) (process-mark proc))))
+;;         (save-excursion
+;;           (goto-char (process-mark proc))
+;;           (insert string)
+;;           (set-marker (process-mark proc) (point)))
+;;         (if moving (goto-char (process-mark proc)))))))
+
+
+;; ;; (after! doom-modeline
+;; ;;   (setq doom-modeline-continuous-word-count-modes '(markdown-mode org-mode text-mode))
+;; ;;   (add-to-list 'global-mode-string '(:eval dired-rsync-modeline-status)))
+;; (after! doom-modeline
+;;   (add-to-list 'global-mode-string '(:eval dired-rsync-modeline-status)))
+
+
+(use-package! dired-rsync-transient
+  :bind (:map dired-mode-map
+              ("C-c C-x" . dired-rsync-transient)))
+
 
 ;; (use-package dired-launch
 ;;   ;;:ensure t
@@ -468,6 +661,17 @@
 
 ;; disassembly to bytecode as well as assembly.
 (use-package! rmsbolt)
+
+
+(use-package! gptel
+  :config
+  (setq
+   gptel-model "claude-3-5-sonnet-20240620" ;  "claude-3-opus-20240229" also available
+   gptel-backend (gptel-make-anthropic "Claude"
+                   :stream t :key "TODO load from gpg"))
+  )
+
+(load-file (expand-file-name "src/random-unique-theme.el" doom-user-dir))
 
 (load-file (expand-file-name "src/credentials.el" doom-user-dir))
 
