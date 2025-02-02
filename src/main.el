@@ -67,13 +67,13 @@
   (interactive)
   (find-file "~/main/org/gtd/me.org"))
 (add-to-list '+doom-dashboard-menu-sections
-             '("Open work.org" :icon (nerd-icons-octicon "nf-oct-file" :face 'doom-dashboard-menu-title)
+             '("Open work.org" :icon (nerd-icons-mdicon "nf-md-robot_angry" :face 'doom-dashboard-menu-title)
                :action open-work-org-file))
 (defun open-work-org-file ()
   (interactive)
   (find-file "~/main/org/gtd/work.org"))
 (add-to-list '+doom-dashboard-menu-sections
-             '("Open me.org" :icon (nerd-icons-octicon "nf-oct-file" :face 'doom-dashboard-menu-title)
+             '("Open me.org" :icon (nerd-icons-mdicon "nf-md-cat" :face 'doom-dashboard-menu-title)
                :action open-me-org-file))
 
 ;;(setq doom-theme 'modus-vivendi)
