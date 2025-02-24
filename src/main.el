@@ -650,12 +650,42 @@
     :key #'ub/load-key-perplexity-token ;can be a function that returns the key
     :stream t) ;If you want responses to be streamed
 
-  (gptel-make-openai "DeepSeek"       ;Any name you want
-    :host "api.deepseek.com"
-    :endpoint "/chat/completions"
+  ;; (gptel-make-openai "DeepSeek"       ;Any name you want
+  ;;   :host "api.deepseek.com"
+  ;;   :endpoint "/chat/completions"
+  ;;   :stream t
+  ;;   :key #'ub/load-key-deepseek-token               ;can be a function that returns the key
+  ;;   :models '(deepseek-chat deepseek-coder))
+
+  ;; OpenRouter offers an OpenAI compatible API
+  (gptel-make-openai "OpenRouter"               ;Any name you want
+    :host "openrouter.ai"
+    :endpoint "/api/v1/chat/completions"
     :stream t
-    :key #'ub/load-key-deepseek-token               ;can be a function that returns the key
-    :models '(deepseek-chat deepseek-coder))
+    :key #'ub/load-key-openrouter-token
+    :models '(anthropic/claude-3.5-sonnet
+              anthropic/claude-3.5-sonnet:beta ;; self-moderated?
+              google/gemini-flash-1.5
+              qwen/qwen-2.5-72b-instruct
+
+              deepseek/deepseek-chat
+              deepseek/deepseek-r1
+              deepseek/deepseek-r1-distill-llama-8b
+              deepseek/deepseek-r1-distill-llama-70b
+
+              nousresearch/hermes-2-pro-llama-3-8b
+
+              google/gemini-2.0-flash-001
+
+              ;;
+              ;; mistralai/mixtral-8x7b-instruct
+              ;; meta-llama/codellama-34b-instruct
+              ;; codellama/codellama-70b-instruct
+              ;; google/palm-2-codechat-bison-32k
+              ;; google/gemini-pro
+              ))
+
+
   )
 
 

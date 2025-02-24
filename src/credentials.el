@@ -4,6 +4,7 @@
 (setq ub/key-openai-token (expand-file-name "key-openai.gpg" doom-user-dir))
 (setq ub/key-anthropic-token (expand-file-name "key-anthropic.gpg" doom-user-dir))
 (setq ub/key-perplexity-token (expand-file-name "key-perplexity.gpg" doom-user-dir))
+(setq ub/key-openrouter-token (expand-file-name "key-openrouter.gpg" doom-user-dir))
 
 ;; (defun ub/load-encrypted-file (filename)
 ;;   "Load an encrypted file."
@@ -43,6 +44,9 @@
   (interactive)
   (ub/load-encrypted-file ub/key-perplexity-token))
 
+(defun ub/load-key-openrouter-token ()
+  (interactive)
+  (ub/load-encrypted-file ub/key-openrouter-token))
 
 ;; Instead, consider using gpg-agent which
 ;; does the same job in a safer way.  See Info node (epa) Caching

@@ -13,6 +13,12 @@
   (require 'jupyter)
   (setq jupyter-use-zmq nil)
 
+  ;; NOTE doesn't work...
+  ;; ;; Set default environment variables for Jupyter kernels
+  ;; (setq jupyter-kernel-process-environment
+  ;;       '("PYTHONBREAKPOINT=0"
+  ;;         "XLA_PYTHON_CLIENT_PREALLOCATE=false"))
+
   ;; REF: https://github.com/emacs-jupyter/jupyter/issues/500
   (defun my-jupyter-api-http-request--ignore-login-error-a
       (func url endpoint method &rest data)
