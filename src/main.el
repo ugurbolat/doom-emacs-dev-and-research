@@ -708,6 +708,12 @@
 (setq tab-bar-new-button nil) ;; who's gonna click that button anyway :p
 
 
+(load-file (expand-file-name "src/remote-runner-args-python.el" doom-user-dir))
+(when (featurep 'transient)
+  (load-file (expand-file-name "src/remote-runner-args-python-transient.el" doom-user-dir)))
+(load-file (expand-file-name "src/remote-runner.el" doom-user-dir))
+
+
 (load-file (expand-file-name "src/completions.el" doom-user-dir))
 
 (load-file (expand-file-name "src/python.el" doom-user-dir))
