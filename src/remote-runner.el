@@ -263,6 +263,23 @@ If buffer is already displayed in some window, reuse that window."
                            display-buffer-pop-up-window)
                           (inhibit-same-window . t)))))))
 
+(defun remote-runner--default-filter (proc output)
+  "Process output from PROC, handling ANSI color codes in OUTPUT."
+  (when (buffer-live-p (process-buffer proc))
+    (with-current-buffer (process-buffer proc)
+      (let ((inhibit-read-only t)
+            (moving (= (point) (process-mark proc))))
+        (save-excursion
+          ;; Insert the text, advancing the process marker.
+          (goto-char (process-mark proc))
+          (let ((start (point)))
+            (insert output)
+            ;; Apply ANSI color codes to the newly inserted text
+            (ansi-color-apply-on-region start (point)))
+          (set-marker (process-mark proc) (point)))
+        ;; If point was at the end, move it to the new end.
+        (when moving (goto-char (process-mark proc)))))))
+
 (defun remote-runner-execute-with-args (args)
   "Execute current buffer with ARGS."
   (let* ((local-file (buffer-file-name))
@@ -289,6 +306,11 @@ If buffer is already displayed in some window, reuse that window."
                      "remote-runner"
                      output-buffer
                      cmd)))
+
+      ;; Add process filter for ANSI color handling
+      (when (require 'ansi-color nil t)
+        (set-process-filter process #'remote-runner--default-filter))
+
       ;; Add process sentinel to handle completion
       (set-process-sentinel
        process
