@@ -382,38 +382,6 @@
 ;;   (dired-async-mode 1))
 
 
-(use-package! detached
-  :init
-  (detached-init)
-  :custom
-  (detached-show-output-on-attach t)
-  (detached-terminal-data-command system-type)
-  (detached-shell-program "/bin/zsh")
-  :config
-  (setq detached-notification-function #'detached-extra-alert-notification)
-
-  (defun my/detached-vterm-send-input-fix (&optional detached)
-    "Fix `detached-vterm-send-input' to exclude shell prompt."
-    (interactive)
-    (let* ((line (buffer-substring-no-properties (vterm-beginning-of-line) (vterm-end-of-line)))
-           ;; Remove shell prompt (assuming format like "bolatu:~$ command")
-           ;;(input (string-trim (replace-regexp-in-string "^[^ ]+[:~]+\\$ " "" line))) ;; for bash
-           (input (string-trim (replace-regexp-in-string "$ " "" line))) ;; zsh
-           (detached-session-origin 'vterm)
-           (detached-session-action detached-vterm-session-action)
-           (detached-session-mode (if detached 'detached 'attached))
-           (detached-current-session (detached-create-session input))
-           (command (detached-session-start-command detached-current-session :type 'string)))
-      (vterm-send-C-a)
-      (vterm-send-C-k)
-      (process-send-string vterm--process command)
-      (setq detached-buffer-session detached-current-session)
-      (vterm-send-C-e)
-      (vterm-send-return)))
-  ;; Apply the advice to override `detached-vterm-send-input`
-  (advice-add 'detached-vterm-send-input :override #'my/detached-vterm-send-input-fix)
-  )
-
 (use-package! dired-rsync
   :after dired
   :bind
@@ -632,7 +600,9 @@
   :config
   (setq gptel-default-mode 'org-mode)
 
-  (setq gptel-model "gpt-4o")
+  ;;(setq gptel-model "meta-llama/llama-3.3-70b-instruct")
+  ;;(setq gptel-model "anthropic/claude-3.7-sonnet")
+  ;;(setq gptel-model "gpt-4o")
   ;;(setq gptel-model "sonar")
 
   ;;(setq gptel-api-key #'gptel-api-key-from-auth-source)
@@ -650,41 +620,90 @@
     :key #'ub/load-key-perplexity-token ;can be a function that returns the key
     :stream t) ;If you want responses to be streamed
 
-  ;; (gptel-make-openai "DeepSeek"       ;Any name you want
-  ;;   :host "api.deepseek.com"
-  ;;   :endpoint "/chat/completions"
-  ;;   :stream t
-  ;;   :key #'ub/load-key-deepseek-token               ;can be a function that returns the key
-  ;;   :models '(deepseek-chat deepseek-coder))
-
   ;; OpenRouter offers an OpenAI compatible API
-  (gptel-make-openai "OpenRouter"               ;Any name you want
-    :host "openrouter.ai"
-    :endpoint "/api/v1/chat/completions"
-    :stream t
-    :key #'ub/load-key-openrouter-token
-    :models '(anthropic/claude-3.5-sonnet
-              anthropic/claude-3.5-sonnet:beta ;; self-moderated?
-              google/gemini-flash-1.5
-              qwen/qwen-2.5-72b-instruct
+  (setq gptel-model 'meta-llama/llama-3.3-70b-instruct
+        gptel-backend
+        (gptel-make-openai "OpenRouter"               ;Any name you want
+          :host "openrouter.ai"
+          :endpoint "/api/v1/chat/completions"
+          :stream t
+          :key #'ub/load-key-openrouter-token
+          :models '(anthropic/claude-3.7-sonnet
+                    anthropic/claude-3.7-sonnet:beta ;; self-moderated?
+                    anthropic/claude-3.7-sonnet:thinking
+                    anthropic/claude-3.5-sonnet
+                    anthropic/claude-3.5-sonnet:beta ;; self-moderated?
+                    google/gemini-flash-1.5
+                    qwen/qwen-2.5-72b-instruct
 
-              deepseek/deepseek-chat
-              deepseek/deepseek-r1
-              deepseek/deepseek-r1-distill-llama-8b
-              deepseek/deepseek-r1-distill-llama-70b
+                    deepseek/deepseek-chat
+                    deepseek/deepseek-r1
+                    deepseek/deepseek-r1-distill-llama-8b
+                    deepseek/deepseek-r1-distill-llama-70b
 
-              nousresearch/hermes-2-pro-llama-3-8b
+                    meta-llama/llama-3.3-70b-instruct
+                    qwen/qwen-2.5-72b-instruct
 
-              google/gemini-2.0-flash-001
+                    nousresearch/hermes-2-pro-llama-3-8b
 
-              ;;
-              ;; mistralai/mixtral-8x7b-instruct
-              ;; meta-llama/codellama-34b-instruct
-              ;; codellama/codellama-70b-instruct
-              ;; google/palm-2-codechat-bison-32k
-              ;; google/gemini-pro
-              ))
+                    google/gemini-2.0-flash-001
 
+                    ;;
+                    ;; mistralai/mixtral-8x7b-instruct
+                    ;; meta-llama/codellama-34b-instruct
+                    ;; codellama/codellama-70b-instruct
+                    ;; google/palm-2-codechat-bison-32k
+                    ;; google/gemini-pro
+                    )))
+
+
+  (setq gptel-directives
+        '((default . "Adapt your response style and depth based on the user's demonstrated knowledge level and the complexity of their queries.")
+          (code . "You are an expert programmer and computer scientist. Write only the request code and only code as output without any additional text, prompt or note unless it is specificially asked.")
+          (code-emacs . "You are an expert in emacs and emacs-lisp programming language. Always give emacs-lisp which be run programatically instead of manual UI operations. Write only the request code and only code as output without any additional text, prompt or note unless it is specificially asked.")
+          (code-explain . "You are an expert programmer and computer scientist. Explain step-by-step from first principles.")
+          (code-debug . "You are a debugging expert. Analyze code snippets, identify potential issues, and suggest fixes. If the issue is not obvious, suggest print statements for collecting more info.")
+          (code-data-analysis . "You are a data analysis expert. Interpret data, suggest visualization methods, and provide insights.")
+
+          ;; REF: https://github.com/f/awesome-chatgpt-prompts
+          (act-as-python-interpreter . "I want you to act like a Python interpreter. I will give you Python code, and you will execute it. Do not provide any explanations. Do not respond with anything except the output of the code. . When I need to tell you something in English, I will do so by putting text inside curly brackets {like this}.")
+          (act-as-linux-cli . "I want you to act as a linux terminal. I will type commands and you will reply with what the terminal should show. I want you to only reply with the terminal output inside one unique code block, and nothing else. do not write explanations. do not type commands unless I instruct you to do so. When I need to tell you something in English, I will do so by putting text inside curly brackets {like this}.")
+
+          (write . "You are an expert writing assistant. Respond concisely.")
+          (chat . "You are a conversation partner. Respond concisely.")
+          (math-explain . (concat "You are an expert in math."
+                                  "Be mathematically rigorous and precise!"
+                                  "When prompting mathematical expressions, you will use latex where the inline math expressions are enclosed with single dollar signs (i.e., $...$)"
+                                  " and displayed math expressions enclosed with double dollar signs (i.e.,"
+                                  ;;"\\begin{equation}"
+                                  "$$"
+                                  "..."
+                                  "$$"
+                                  ;;"\\end{equation}"
+                                  ")"
+                                  "Avoid warnings/disclaimers."
+                                  ))
+          (math-explain . (concat "You are an expert in math."
+                                  "Be mathematically rigorous and precise!"
+                                  "Explain step-by-step from first principles."
+                                  "List the necessary background knowledge needed to understand the given math expression such as definitions, properties, and theorems."
+                                  "When prompting mathematical expressions, you will use latex where the inline math expressions are enclosed with single dollar signs (i.e., $...$)"
+                                  " and displayed math expressions enclosed with double dollar signs (i.e.,"
+                                  ;;"\\begin{equation}"
+                                  "$$"
+                                  "..."
+                                  "$$"
+                                  ;;"\\end{equation}"
+                                  ")"
+                                  "Avoid warnings/disclaimers."
+                                  ))
+          (research . "You are a research assistant. Summarize key points, cite relevant sources, quote related statements and identify areas for further investigation.")
+          (security . "You are a cybersecurity expert. Analyze potential vulnerabilities and suggest best practices for secure coding and system design.")
+
+          ;; REF: https://github.com/f/awesome-chatgpt-prompts?tab=readme-ov-file#structured-iterative-reasoning-protocol-sirp
+          (reasoning-sirp . "Begin by enclosing all thoughts within tags, exploring multiple angles and approaches. Break down the solution into clear steps within tags. Start with a 20-step budget, requesting more for complex problems if needed. Use tags after each step to show the remaining budget. Stop when reaching 0. Continuously adjust your reasoning based on intermediate results and reflections, adapting your strategy as you progress. Regularly evaluate progress using tags. Be critical and honest about your reasoning process. Assign a quality score between 0.0 and 1.0 using tags after each reflection. Use this to guide your approach: 0.8+: Continue current approach 0.5-0.7: Consider minor adjustments Below 0.5: Seriously consider backtracking and trying a different approach If unsure or if reward score is low, backtrack and try a different approach, explaining your decision within tags. For mathematical problems, show all work explicitly using LaTeX for formal notation and provide detailed proofs. Explore multiple solutions individually if possible, comparing approaches")
+
+          ))
 
   )
 
