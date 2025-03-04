@@ -621,49 +621,52 @@
     :stream t) ;If you want responses to be streamed
 
   ;; OpenRouter offers an OpenAI compatible API
-  (setq gptel-model 'meta-llama/llama-3.3-70b-instruct
-        gptel-backend
-        (gptel-make-openai "OpenRouter"               ;Any name you want
-          :host "openrouter.ai"
-          :endpoint "/api/v1/chat/completions"
-          :stream t
-          :key #'ub/load-key-openrouter-token
-          :models '(anthropic/claude-3.7-sonnet
-                    anthropic/claude-3.7-sonnet:beta ;; self-moderated?
-                    anthropic/claude-3.7-sonnet:thinking
-                    anthropic/claude-3.5-sonnet
-                    anthropic/claude-3.5-sonnet:beta ;; self-moderated?
-                    google/gemini-flash-1.5
-                    qwen/qwen-2.5-72b-instruct
+  (setq
+   ;;gptel-model 'meta-llama/llama-3.3-70b-instruct
+   gptel-model 'anthropic/claude-3.7-sonnet
+   gptel-backend
+   (gptel-make-openai "OpenRouter"               ;Any name you want
+     :host "openrouter.ai"
+     :endpoint "/api/v1/chat/completions"
+     :stream t
+     :key #'ub/load-key-openrouter-token
+     :models '(anthropic/claude-3.7-sonnet
+               anthropic/claude-3.7-sonnet:beta ;; self-moderated?
+               anthropic/claude-3.7-sonnet:thinking
+               anthropic/claude-3.5-sonnet
+               anthropic/claude-3.5-sonnet:beta ;; self-moderated?
+               google/gemini-flash-1.5
+               qwen/qwen-2.5-72b-instruct
 
-                    deepseek/deepseek-chat
-                    deepseek/deepseek-r1
-                    deepseek/deepseek-r1-distill-llama-8b
-                    deepseek/deepseek-r1-distill-llama-70b
+               deepseek/deepseek-chat
+               deepseek/deepseek-r1
+               deepseek/deepseek-r1-distill-llama-8b
+               deepseek/deepseek-r1-distill-llama-70b
 
-                    meta-llama/llama-3.3-70b-instruct
-                    qwen/qwen-2.5-72b-instruct
+               meta-llama/llama-3.3-70b-instruct
+               qwen/qwen-2.5-72b-instruct
 
-                    nousresearch/hermes-2-pro-llama-3-8b
+               nousresearch/hermes-2-pro-llama-3-8b
 
-                    google/gemini-2.0-flash-001
+               google/gemini-2.0-flash-001
 
-                    ;;
-                    ;; mistralai/mixtral-8x7b-instruct
-                    ;; meta-llama/codellama-34b-instruct
-                    ;; codellama/codellama-70b-instruct
-                    ;; google/palm-2-codechat-bison-32k
-                    ;; google/gemini-pro
-                    )))
+               ;;
+               ;; mistralai/mixtral-8x7b-instruct
+               ;; meta-llama/codellama-34b-instruct
+               ;; codellama/codellama-70b-instruct
+               ;; google/palm-2-codechat-bison-32k
+               ;; google/gemini-pro
+               )))
 
 
   (setq gptel-directives
-        '((default . "Adapt your response style and depth based on the user's demonstrated knowledge level and the complexity of their queries.")
+        '((default . "Adapt your response style and depth based on the user's demonstrated knowledge level and the complexity of their queries. Focus on the request task without warnings, disclaimers, etc.")
           (code . "You are an expert programmer and computer scientist. Write only the request code and only code as output without any additional text, prompt or note unless it is specificially asked.")
           (code-emacs . "You are an expert in emacs and emacs-lisp programming language. Always give emacs-lisp which be run programatically instead of manual UI operations. Write only the request code and only code as output without any additional text, prompt or note unless it is specificially asked.")
           (code-explain . "You are an expert programmer and computer scientist. Explain step-by-step from first principles.")
           (code-debug . "You are a debugging expert. Analyze code snippets, identify potential issues, and suggest fixes. If the issue is not obvious, suggest print statements for collecting more info.")
           (code-data-analysis . "You are a data analysis expert. Interpret data, suggest visualization methods, and provide insights.")
+          (code-git-commit . "You are expert in git. Given the changes, write a good commit title and message. The first line is treated as the subject of an email and the rest of the text as the body. Note that commit message title is limited to 72 characters so write a fitting short commit title. The trick to structuring an exceptional commit message is to find the proper balance between brevity and detail. Brief enough that it’s easy to read, but detailed enough that it’s easy to understand. In the title, you can use a fitting github-based emojis for example :bug: fix issue x. Write only the request commit title and message without any additional text, prompt or note. In the title, use only lower-case letters.")
 
           ;; REF: https://github.com/f/awesome-chatgpt-prompts
           (act-as-python-interpreter . "I want you to act like a Python interpreter. I will give you Python code, and you will execute it. Do not provide any explanations. Do not respond with anything except the output of the code. . When I need to tell you something in English, I will do so by putting text inside curly brackets {like this}.")
