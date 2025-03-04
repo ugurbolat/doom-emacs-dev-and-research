@@ -708,11 +708,6 @@
 (setq tab-bar-new-button nil) ;; who's gonna click that button anyway :p
 
 
-(load-file (expand-file-name "src/remote-runner-args-python.el" doom-user-dir))
-(when (featurep 'transient)
-  (load-file (expand-file-name "src/remote-runner-args-python-transient.el" doom-user-dir)))
-(load-file (expand-file-name "src/remote-runner.el" doom-user-dir))
-
 
 (load-file (expand-file-name "src/completions.el" doom-user-dir))
 
@@ -748,6 +743,47 @@
        (load-file (expand-file-name "src/elfeed-config.el" doom-user-dir))
        )))
 
+
+
+
+(load-file (expand-file-name "src/remote-runner-args-python.el" doom-user-dir))
+(when (featurep 'transient)
+  (load-file (expand-file-name "src/remote-runner-args-python-transient.el" doom-user-dir)))
+(load-file (expand-file-name "src/remote-runner.el" doom-user-dir))
+
+
+
+(use-package! detached
+  :init
+  (detached-init)
+  :custom
+  (detached-show-output-on-attach t)
+  (detached-terminal-data-command system-type)
+  (detached-shell-program "/bin/zsh")
+  :config
+  (setq detached-notification-function #'detached-extra-alert-notification)
+
+  (defun my/detached-vterm-send-input-fix (&optional detached)
+    "Fix `detached-vterm-send-input' to exclude shell prompt."
+    (interactive)
+    (let* ((line (buffer-substring-no-properties (vterm-beginning-of-line) (vterm-end-of-line)))
+           ;; Remove shell prompt (assuming format like "bolatu:~$ command")
+           ;;(input (string-trim (replace-regexp-in-string "^[^ ]+[:~]+\\$ " "" line))) ;; for bash
+           (input (string-trim (replace-regexp-in-string "$ " "" line))) ;; zsh
+           (detached-session-origin 'vterm)
+           (detached-session-action detached-vterm-session-action)
+           (detached-session-mode (if detached 'detached 'attached))
+           (detached-current-session (detached-create-session input))
+           (command (detached-session-start-command detached-current-session :type 'string)))
+      (vterm-send-C-a)
+      (vterm-send-C-k)
+      (process-send-string vterm--process command)
+      (setq detached-buffer-session detached-current-session)
+      (vterm-send-C-e)
+      (vterm-send-return)))
+  ;; Apply the advice to override `detached-vterm-send-input`
+  (advice-add 'detached-vterm-send-input :override #'my/detached-vterm-send-input-fix)
+  )
 
 
 (message "main.el load end")
